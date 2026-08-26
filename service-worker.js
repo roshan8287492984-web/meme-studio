@@ -1,0 +1,5 @@
+const CACHE_NAME = "memestudio-error-v2";
+const ERROR_PAGE = "404.html";
+self.addEventListener("install", event => { event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.add(new URL(ERROR_PAGE, self.registration.scope).href))); self.skipWaiting(); });
+self.addEventListener("activate", event => { event.waitUntil((async()=>{ const keys=await caches.keys(); await Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))); await self.clients.claim(); })()); });
+self.addEventListener("fetch", event => { const req=event.request; if(req.mode!=="navigate") return; event.respondWith((async()=>{ try { const response=await fetch(req); if(response.status===404){ const cached=await caches.match(new URL(ERROR_PAGE,self.registration.scope).href); if(cached) return new Response(await cached.clone().text(),{status:404,headers:{"Content-Type":"text/html; charset=utf-8"}}); } return response; } catch(e) { const cached=await caches.match(new URL(ERROR_PAGE,self.registration.scope).href); return cached || Response.error(); } })()); });

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+
+
+
+
+<title>Meme Generator Free Online | Meme Studio</title>
+<link rel="icon" type="image/x-icon" href="meme-studio-favicon.ico?v=3">
+<link rel="icon" type="image/png" sizes="16x16" href="meme-studio-favicon-16.png?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="meme-studio-favicon-32.png?v=3">
+<link rel="icon" type="image/png" sizes="48x48" href="meme-studio-favicon-48.png?v=3">
+<link rel="icon" type="image/png" sizes="64x64" href="meme-studio-favicon-64.png?v=3">
+<link rel="apple-touch-icon" sizes="180x180" href="meme-studio-favicon-180.png?v=3">
+<link rel="icon" type="image/png" sizes="192x192" href="meme-studio-favicon-192.png?v=3">
+<link rel="icon" type="image/png" sizes="512x512" href="meme-studio-favicon-512.png?v=3">
+
+
+
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box}
+html{min-height:100%;}
+body{margin:0;min-height:100vh;font-family:Inter,system-ui,sans-serif;background:linear-gradient(135deg,#f7f7fb,#ecebff);color:#171722;padding:32px 28px;}
+.shell{width:min(1400px,100%);margin:0 auto;}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:22px;margin-bottom:48px;}
+.mark{width:48px;height:48px;border-radius:14px;background:#6d5dfc;color:white;display:grid;place-items:center;box-shadow:0 10px 25px #6d5dfc33;font-size:22px;}
+.hero{text-align:center;margin-bottom:38px;}
+.eyebrow{display:inline-flex;padding:8px 13px;border-radius:999px;background:#fff;border:1px solid #e5e4ee;font-size:13px;font-weight:700;color:#6d5dfc;}
+.hero h1{font-size:clamp(38px,5vw,58px);line-height:1.05;margin:18px 0 12px;letter-spacing:-2px;}
+.hero p{margin:0 auto;color:#666879;max-width:760px;line-height:1.7;font-size:17px;}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;max-width:1185px;margin:0 auto;}
+.choice{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e3e2eb;border-radius:24px;padding:32px;box-shadow:0 18px 50px #23204412;transition:.2s;min-width:0;}
+.choice:hover{transform:translateY(-5px);box-shadow:0 24px 60px #2320441c;border-color:#c8c4ff;}
+.icon{width:78px;height:78px;border-radius:22px;display:grid;place-items:center;font-size:40px;background:#f0efff;margin-bottom:24px;}
+.choice h2{margin:0 0 12px;font-size:27px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.choice p{color:#696a79;line-height:1.6;margin:0 0 24px;font-size:16px;}
+.go{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:#6d5dfc;}
+.badge{font-size:10px;padding:5px 8px;border-radius:999px;background:#f1efff;margin-left:3px;}
+.seo-content{margin:42px auto 0;padding:42px 0 8px;border-top:1px solid #e3e2eb;text-align:left;color:#60606d;max-width:1185px;}
+.seo-content h2{font-size:clamp(24px,4vw,34px);margin:0 0 18px;color:#22212b;letter-spacing:-.025em;}
+.seo-content p{margin:0 0 14px;font-size:13px;line-height:1.8;}
+.seo-content strong{color:#5c4de0;}
+.footer{text-align:center;color:#858594;font-size:12px;margin:28px auto 0;max-width:1185px;}
+.legal-footer-links{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:1185px;margin:18px auto 0;}
+.legal-footer-links a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;background:#2563eb;color:#fff!important;border-radius:10px;text-decoration:none!important;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,.25);transition:background .2s,transform .2s,box-shadow .2s;}
+.legal-footer-links a:hover{background:#1d4ed8;transform:translateY(-1px);box-shadow:0 6px 16px rgba(37,99,235,.32);}
+@media(max-width:900px){.choices{grid-template-columns:1fr;max-width:700px}.legal-footer-links{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:700px){body{padding:24px 18px}.brand{margin-bottom:30px}.hero{margin-bottom:28px}.hero p{font-size:15px}.choice{padding:24px}.seo-content{margin-top:30px;padding-top:30px}.seo-content p{font-size:12px;line-height:1.75;}}
+@media(max-width:480px){body{padding:18px 12px}.brand{font-size:19px;margin-bottom:24px}.mark{width:42px;height:42px;border-radius:12px;font-size:19px}.hero h1{font-size:36px;letter-spacing:-1.5px}.hero p{font-size:13px}.choices{gap:14px}.choice{padding:18px;border-radius:18px}.choice h2{font-size:22px}.choice p{font-size:13px}.icon{width:58px;height:58px;font-size:30px;margin-bottom:16px}.go{font-size:13px}.legal-footer-links{grid-template-columns:1fr;gap:8px}.legal-footer-links a{width:100%;}}
+.dark{background:#111119;color:#f4f4fa}.dark .choice{background:#1a1a24;border-color:#2b2b38}.dark .hero p,.dark .choice p{color:#aaaabd}.dark .eyebrow{background:#1a1a24;border-color:#303040}.dark .icon{background:#27233f}.dark .footer{color:#77778a}.dark .seo-content{border-color:#2a2934;color:#a7a6b5}.dark .seo-content h2{color:#f4f4fa}.dark .seo-content strong{color:#aaa1ff}.dark .badge{background:#2a2744;color:#e9e7ff}.dark .faq-section{border-color:#2a2934}.dark .faq-section h2{color:#f4f4fa}.dark .faq-intro{color:#a7a6b5}.dark .faq-list details{background:#1a1a24;border-color:#2b2b38}.dark .faq-list details[open]{border-color:#4a456e}.dark .faq-list summary{color:#f4f4fa}.dark .faq-list details p{color:#aaaabd}.dark .faq-list summary::after{color:#aaa1ff}.dark .legal-footer-links a{box-shadow:0 4px 12px rgba(0,0,0,.25)}
+</style>
+<style id="faq-seo-style">
+.faq-section{max-width:1185px;margin:44px auto 0;padding:42px 0 8px;border-top:1px solid #e3e2eb;text-align:left;}
+.faq-section h2{font-size:clamp(24px,4vw,34px);margin:0 0 10px;color:#22212b;letter-spacing:-.025em;}
+.faq-intro{margin:0 0 20px;color:#60606d;font-size:14px;line-height:1.75;}
+.faq-list{display:grid;gap:10px;}
+.faq-list details{background:#fff;border:1px solid #e3e2eb;border-radius:14px;padding:0 18px;transition:border-color .2s,box-shadow .2s;}
+.faq-list details[open]{border-color:#c8c4ff;box-shadow:0 8px 24px #23204410;}
+.faq-list summary{cursor:pointer;list-style:none;padding:17px 34px 17px 0;font-weight:700;color:#22212b;position:relative;}
+.faq-list summary::-webkit-details-marker{display:none;}
+.faq-list summary::after{content:'+';position:absolute;right:3px;top:13px;font-size:22px;color:#6d5dfc;font-weight:600;}
+.faq-list details[open] summary::after{content:'−';}
+.faq-list details p{margin:0 0 17px;color:#60606d;font-size:14px;line-height:1.75;}
+@media(max-width:700px){.faq-section{margin-top:30px;padding-top:30px}.faq-list details{padding:0 14px}.faq-list summary{font-size:14px;padding-right:30px}.faq-list details p{font-size:13px;line-height:1.7;}}
+
+</style>
+
+
+<style id="legal-footer-button-style">
+.legal-footer-links{width:100%;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px;margin:28px auto 0;padding:0;}
+.legal-footer-links a{display:inline-flex;align-items:center;justify-content:center;min-width:130px;min-height:44px;padding:10px 18px;background:#2563eb;color:#fff!important;border-radius:10px;text-decoration:none!important;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,.25);transition:background .2s,transform .2s,box-shadow .2s;box-sizing:border-box;}
+.legal-footer-links a:hover{background:#1d4ed8;transform:translateY(-1px);box-shadow:0 6px 16px rgba(37,99,235,.32)}
+@media(max-width:600px){.legal-footer-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:22px}.legal-footer-links a{width:100%;min-width:0;padding:10px 8px;font-size:14px}}
+@media(max-width:380px){.legal-footer-links{grid-template-columns:1fr}}
+</style>
+<style id="header-legal-links-style">
+.header-legal-links{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-left:auto;}
+.header-legal-links a{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 12px;background:#2563eb;color:#fff!important;border-radius:9px;text-decoration:none!important;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 3px 10px rgba(37,99,235,.22);transition:background .2s,transform .2s,box-shadow .2s;}
+.header-legal-links a:hover{background:#1d4ed8;transform:translateY(-1px);box-shadow:0 5px 14px rgba(37,99,235,.3)}
+@media(max-width:1050px){.header-legal-links{gap:6px}.header-legal-links a{padding:7px 9px;font-size:11px;min-height:34px}}
+@media(max-width:760px){.header-legal-links{width:100%;order:4;margin:8px 0 0;overflow-x:auto;justify-content:flex-start;flex-wrap:nowrap;padding-bottom:3px}.header-legal-links a{flex:0 0 auto;font-size:11px}}
+.index-header{display:flex;align-items:center;gap:18px;margin:0 auto 42px;max-width:1400px;}
+.index-header .brand{margin:0;}
+@media(max-width:760px){.index-header{flex-wrap:wrap;margin-bottom:28px}.index-header .brand{width:auto}.index-header .header-legal-links{width:100%;margin-left:0}}
+</style>
+<style id="index-theme-toggle-style">
+.index-theme-toggle{width:42px;height:42px;flex:0 0 42px;border:1px solid #e2e1ea;border-radius:12px;background:#fff;color:#252431;display:inline-grid;place-items:center;font-size:18px;cursor:pointer;box-shadow:0 6px 18px rgba(35,32,68,.10);transition:.18s;line-height:1;}
+.index-theme-toggle:hover{transform:translateY(-1px);border-color:#c8c4ff;box-shadow:0 8px 22px rgba(35,32,68,.14);}
+.dark .index-theme-toggle{background:#1a1a24;color:#f4f4fa;border-color:#303040;box-shadow:0 6px 18px rgba(0,0,0,.25);}
+@media(max-width:760px){.index-theme-toggle{width:40px;height:40px;flex-basis:40px;margin-left:auto;}}
+</style>
+<meta content="Create memes online with Meme Studio, a free meme generator for images and GIFs. Make custom memes with templates, captions, stickers and more." name="description"/><meta content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" name="robots"/><link href="index.html" rel="canonical"/><meta content="website" property="og:type"/><meta content="Meme Generator Free Online | Meme Studio" property="og:title"/><meta content="Create memes online with Meme Studio, a free meme generator for images and GIFs. Make custom memes with templates, captions, stickers and more." property="og:description"/><meta content="index.html" property="og:url"/><meta content="Meme Studio" property="og:site_name"/><meta content="en_US" property="og:locale"/><meta content="summary" name="twitter:card"/><meta content="Meme Generator Free Online | Meme Studio" name="twitter:title"/><meta content="Create memes online with Meme Studio, a free meme generator for images and GIFs. Make custom memes with templates, captions, stickers and more." name="twitter:description"/><meta content="#6d5dfc" name="theme-color"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Meme Studio","url":"./","description":"Create memes online with Meme Studio, a free meme generator for images and GIFs. Make custom memes with templates, captions, stickers and more."}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Meme Studio","applicationCategory":"MultimediaApplication","operatingSystem":"Web Browser","browserRequirements":"Requires JavaScript","description":"Create memes online with Meme Studio, a free meme generator for images and GIFs. Make custom memes with templates, captions, stickers and more.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<!-- Meme Studio favicon -->
+</head>
+<body>
+<main class="shell">
+<header class="index-header"><div class="brand"><span class="mark">M</span><span>Meme<span style="color:#6d5dfc">Studio</span></span></div><button aria-label="Toggle light and dark mode" class="index-theme-toggle" id="indexThemeToggle" title="Toggle theme" type="button">☀️</button><div aria-label="Information pages" class="header-legal-links"><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a><a href="contact.html">Contact Us</a></div></header>
+<section class="hero">
+<span class="eyebrow">✦ Fast • Private • No signup</span>
+<h1>Meme Generator</h1>
+<p>Choose your meme format to open the right editor. You can create a classic image meme or make an animated GIF meme.</p>
+</section>
+<section aria-label="Choose meme type" class="choices">
+<a class="choice" href="meme-editor.html"><div class="icon">🖼️</div><h2>Image Meme</h2><p>Create a traditional meme from a JPG, PNG, WebP image, or a meme template. Add text, stickers, drawings, backgrounds and more.</p><span class="go">Open Image Meme Editor →</span></a>
+<a class="choice" href="gif-editor.html"><div class="icon">🎞️</div><h2>GIF Meme <span class="badge">ANIMATED</span></h2><p>Upload or choose an animated GIF and add meme text, colors and other edits designed for GIF memes.</p><span class="go">Open GIF Meme Editor →</span></a>
+</section>
+<section aria-labelledby="about-meme-generator" class="seo-content">
+<h2 id="about-meme-generator">About Meme Studio: A Free Meme Generator</h2>
+<p>Meme Studio is an easy-to-use <strong>meme generator</strong> for creating shareable image and GIF memes directly in your browser. Whether you want a quick joke, a reaction image, a social post, or a custom meme built from your own photo, the tool gives you a simple place to create it without installing complicated software. Choose an image meme or GIF meme editor from this page, then start creating in a few clicks.</p>
+<p>For anyone searching for a <strong>meme generator free</strong> online, Meme Studio is designed around a fast browser-based workflow. You can upload an image, choose from available meme templates, add captions, move text around the canvas, and customize the look of your meme. The image editor also includes stickers, drawing tools, backgrounds, and other controls so you can make a result that feels more personal than a basic text overlay.</p>
+<p>If you enjoy popular internet formats, the template library helps you discover ready-to-use meme ideas. You can browse popular, classic, and reaction categories, or search for a specific format. Looking for a <strong>Drake meme generator</strong>? Search the template library for Drake-related formats when they are available, open the image meme editor, and add your own captions. The same workflow works for many other familiar meme formats and reaction images.</p>
+<p>Meme Studio can also be used as a <strong>random meme generator</strong> starting point. Instead of spending a long time deciding what to make, choose a template from the library and let the idea develop from the image. You can then replace the words, add stickers, draw on the canvas, and adjust the design until the meme matches your idea. This makes the tool useful for both planned memes and spontaneous jokes.</p>
+<p>You may also see searches for an <strong>AI meme generator</strong>. Meme Studio focuses on hands-on browser editing rather than claiming that artificial intelligence writes every joke for you. That means you stay in control of the caption, layout, images, stickers, and final design. It is a useful approach when you already have an idea and want a straightforward editor instead of an automated result.</p>
+<p>The image meme editor is built for flexible customization. Start with a template or upload your own image, add multiple text layers, resize and position captions, and use the available style controls to create a recognizable meme. If you are making an animated joke, switch to the GIF meme editor and upload a GIF instead. The GIF editor is kept separate from the image template library so the experience stays clear for users who want to work with animation.</p>
+<p>Meme Studio is also designed to work across desktop and mobile screens. Responsive layouts make the main choices, editor controls, template browsing, and upload actions easier to use on smaller devices. Dark mode is available in the editor for a more comfortable interface in low-light environments. Your creative workflow stays focused on the canvas rather than requiring an account or a complicated setup.</p>
+<p>Whether you call it a <strong>free meme generator</strong>, an online meme maker, or simply a meme editor, the goal is the same: help you turn an image or GIF into a meme quickly. Start with the format you want, choose a template or upload your own media, add your text and visual elements, and export the finished creation. Meme Studio brings the essential meme-making tools together in one browser-based workspace.</p>
+<p>The interface is intentionally straightforward for beginners while still giving experienced creators useful controls. You can move between the image and GIF editors when your project changes, keep the workspace focused, and use the responsive layout on a phone, tablet, or desktop. Start creating a meme whenever inspiration strikes, without needing to learn a complex design application first.</p>
+</section>
+<section aria-labelledby="faq-heading" class="faq-section">
+<h2 id="faq-heading">Meme Generator FAQ</h2>
+<p class="faq-intro">Find quick answers about using Meme Studio as a free meme generator for image memes and GIF memes.</p>
+<div class="faq-list">
+<details><summary>Where can I find the best meme generator?</summary><p>Meme Studio is a browser-based <strong>meme generator</strong> where you can create image memes from templates or your own pictures. It includes text, sticker, drawing, background, and customization tools in one editor.</p></details>
+<details><summary>What's the best free meme generator?</summary><p>The best free meme generator depends on the features you need. Meme Studio is a free browser-based option for creating custom image and GIF memes, with template browsing, captions, stickers, drawings, and other editing controls.</p></details>
+<details><summary>Is this a meme generator?</summary><p>Yes. Meme Studio is an online <strong>free meme generator</strong> for making image and GIF memes. You can start with a meme template or upload your own image, add text and other elements, then export your creation.</p></details>
+<details><summary>What If I Told You meme generator?</summary><p>If you are looking for a “What If I Told You” meme generator, search the available meme templates for that format and open the matching template in the image meme editor. You can then add your own captions and customize the meme.</p></details>
+<details><summary>What Did It Cost meme generator?</summary><p>If you want to make a “What Did It Cost” meme, use the meme template search to find the format when it is available, then open it in the image meme editor. Add your own text, resize and position captions, and customize the design before downloading it.</p></details>
+</div>
+</section>
+<div class="footer">Your files stay in your browser unless you choose to upload them to another service.</div>
+<footer><div class="legal-footer-links"><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a><a href="contact.html">Contact Us</a></div></footer>
+</main>
+<script>
+(function(){
+  const root=document.body;
+  const toggle=document.getElementById('indexThemeToggle');
+  const saved=localStorage.getItem('theme');
+  if(saved==='dark') root.classList.add('dark');
+  function updateTheme(){
+    const dark=root.classList.contains('dark');
+    toggle.textContent=dark?'🌙':'☀️';
+    toggle.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');
+    toggle.title=dark?'Switch to light mode':'Switch to dark mode';
+  }
+  updateTheme();
+  toggle.addEventListener('click',function(){
+    root.classList.toggle('dark');
+    localStorage.setItem('theme',root.classList.contains('dark')?'dark':'light');
+    updateTheme();
+  });
+})();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
+</script></body>
+</html>

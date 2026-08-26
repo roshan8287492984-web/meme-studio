@@ -1,0 +1,5 @@
+# Custom error handling for Netlify. 404 is handled by the static 404.html page.
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
