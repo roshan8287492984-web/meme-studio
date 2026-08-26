@@ -65,7 +65,7 @@
  min-width:0!important;
  padding:0!important;
  margin:0!important;
- opacity:0;
+ opacity:0;pointer-events:none;
  cursor:pointer;
  border:0!important;
 }
@@ -225,7 +225,7 @@
   cursor:pointer;overflow:hidden;flex:0 0 auto;font-weight:900;font-size:14px;
 }
 .draw-custom-color:hover{transform:scale(1.08);background:#eeeaff}
-.draw-custom-color input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;padding:0;border:0}
+.draw-custom-color input{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;cursor:pointer;padding:0;border:0}
 .draw-controls small{display:block;margin-top:8px;font-size:9px;color:#92919c}
 .dark .draw-controls{background:#201e2c;border-color:#3a3650}
 .dark .draw-controls-title strong{color:#eeeaff}
@@ -245,14 +245,14 @@
 .draw-swatch.active{box-shadow:0 0 0 2px #6d5dfc,0 0 0 4px rgba(109,93,252,.12);transform:scale(1.08)}
 .draw-custom-color{position:relative;width:25px;height:25px;border-radius:50%;display:grid;place-items:center;border:1px dashed #9188b4;background:linear-gradient(135deg,#fff,#eeeaff);color:#665bd0;cursor:pointer;overflow:hidden;flex:0 0 auto;font-weight:900;font-size:14px}
 .draw-custom-color:hover{transform:scale(1.08);background:#eeeaff}
-.draw-custom-color input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;padding:0;border:0}
+.draw-custom-color input{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;cursor:pointer;padding:0;border:0}
 .draw-controls small{display:block;margin-top:8px;font-size:9px;color:#92919c}
 .dark .draw-controls{background:#201e2c;border-color:#3a3650}
 .dark .draw-controls-title strong{color:#eeeaff}
 .dark .draw-controls-title span{color:#aaa4bd}
 .dark .draw-swatch{border-color:#29263a;box-shadow:0 0 0 1px #555064}
 .dark .draw-custom-color{border-color:#6259a8;background:#28243b;color:#c2bbff}
-.draw-controls{margin:10px 0 0;padding:10px 11px;border:1px solid #e7e3f5;border-radius:12px;background:#faf9ff}.draw-controls.hidden{display:none}.draw-controls-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.draw-controls-title strong{font-size:11px;color:#39354d}.draw-controls-title span{font:700 9px monospace;color:#7a738f}.draw-color-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.draw-swatch{width:25px;height:25px;padding:0;border-radius:50%;border:2px solid #fff;background:var(--draw-sw);box-shadow:0 0 0 1px #d7d3df;cursor:pointer;transition:.12s;flex:0 0 auto}.draw-swatch:hover{transform:scale(1.08)}.draw-swatch.active{box-shadow:0 0 0 2px #6d5dfc,0 0 0 4px rgba(109,93,252,.12);transform:scale(1.08)}.draw-custom-color{position:relative;width:25px;height:25px;border-radius:50%;display:grid;place-items:center;border:1px dashed #9188b4;background:linear-gradient(135deg,#fff,#eeeaff);color:#665bd0;cursor:pointer;overflow:hidden;flex:0 0 auto;font-weight:900;font-size:14px}.draw-custom-color:hover{transform:scale(1.08)}.draw-custom-color input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.draw-controls small{display:block;margin-top:8px;font-size:9px;color:#92919c}.dark .draw-controls{background:#201e2c;border-color:#3a3650}.dark .draw-controls-title strong{color:#eeeaff}.dark .draw-controls-title span{color:#aaa4bd}.dark .draw-swatch{border-color:#29263a;box-shadow:0 0 0 1px #555064}.dark .draw-custom-color{border-color:#6259a8;background:#28243b;color:#c2bbff}
+.draw-controls{margin:10px 0 0;padding:10px 11px;border:1px solid #e7e3f5;border-radius:12px;background:#faf9ff}.draw-controls.hidden{display:none}.draw-controls-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.draw-controls-title strong{font-size:11px;color:#39354d}.draw-controls-title span{font:700 9px monospace;color:#7a738f}.draw-color-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.draw-swatch{width:25px;height:25px;padding:0;border-radius:50%;border:2px solid #fff;background:var(--draw-sw);box-shadow:0 0 0 1px #d7d3df;cursor:pointer;transition:.12s;flex:0 0 auto}.draw-swatch:hover{transform:scale(1.08)}.draw-swatch.active{box-shadow:0 0 0 2px #6d5dfc,0 0 0 4px rgba(109,93,252,.12);transform:scale(1.08)}.draw-custom-color{position:relative;width:25px;height:25px;border-radius:50%;display:grid;place-items:center;border:1px dashed #9188b4;background:linear-gradient(135deg,#fff,#eeeaff);color:#665bd0;cursor:pointer;overflow:hidden;flex:0 0 auto;font-weight:900;font-size:14px}.draw-custom-color:hover{transform:scale(1.08)}.draw-custom-color input{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;cursor:pointer}.draw-controls small{display:block;margin-top:8px;font-size:9px;color:#92919c}.dark .draw-controls{background:#201e2c;border-color:#3a3650}.dark .draw-controls-title strong{color:#eeeaff}.dark .draw-controls-title span{color:#aaa4bd}.dark .draw-swatch{border-color:#29263a;box-shadow:0 0 0 1px #555064}.dark .draw-custom-color{border-color:#6259a8;background:#28243b;color:#c2bbff}
 
 .bg-image-btn,.bg-image-clear{width:31px;height:31px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;display:grid;place-items:center;font-size:15px}.bg-image-btn:hover,.bg-image-clear:hover{background:#f1f0ff;border-color:#aaa1ff}.bg-image-clear{color:#e95460;font-weight:800;font-size:18px}.dark .bg-image-btn,.dark .bg-image-clear{background:#202027;border-color:#30303a;color:#eee}
 
