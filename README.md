@@ -16,3 +16,7 @@ The site is configured for its public domain `https://www.freememeai.com/`. `rob
 The site includes canonical tags, robots directives, Open Graph metadata, Twitter cards, JSON-LD WebApplication/WebSite structured data, and a sitemap/robots file. Error pages are marked `noindex,nofollow,noarchive`.
 
 Favicon: Option 3 classic meme face. Favicon filenames are versioned to prevent browser/service-worker cache from serving an older icon.
+
+
+## Template API / SEO fix
+The live template pages now call the same-origin `/api/templates` endpoint. Netlify proxies that endpoint to Imgflip, so browser JavaScript no longer directly calls `api.imgflip.com`. The Templates page also contains crawlable static template-format content and supports `?q=` links for internal template searches.

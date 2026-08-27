@@ -1,3 +1,10 @@
+# Same-origin template API proxy. The browser no longer calls Imgflip directly.
+[[redirects]]
+  from = "/api/templates"
+  to = "/.netlify/functions/templates"
+  status = 200
+  force = true
+
 # Custom error handling for Netlify. 404 is handled by the static 404.html page.
 [[redirects]]
   from = "/*"

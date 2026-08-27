@@ -4,7 +4,7 @@ let image=null, bg="#ffffff", bgImage=null, ratio=1, texts=[], stickers=[], canv
 let history=[], future=[], selectedTemplate=-1;
 
 let templates=[];
-const TEMPLATE_API='https://api.imgflip.com/get_memes';
+const TEMPLATE_API='/api/templates';
 function categoryForTemplate(t,index){
  const n=String(t.name||'').toLowerCase();
  const reaction=/drake|distracted boyfriend|woman yelling|change my mind|gru|surprised|confused|disaster girl|success kid|one does not simply|doge|mocking spongebob|always has been|trade offer|reaction|crying|laughing|face|who would win|expanding brain/.test(n);
