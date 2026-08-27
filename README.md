@@ -11,7 +11,7 @@ GitHub Pages automatically uses `404.html`. Apache and Netlify configuration fil
 
 ## SEO deployment note
 
-Before publishing, replace every occurrence of `YOUR-DOMAIN.com` in `robots.txt` and `sitemap.xml` with the site's real public domain. The HTML pages use deployment-safe relative canonical URLs; after the final domain is known, absolute `og:url` and `og:image` tags can also be added if desired.
+The site is configured for its public domain `https://www.freememeai.com/`. `robots.txt`, `sitemap.xml`, canonical URLs, Open Graph URLs, and the homepage WebSite structured-data URL use the final public domain.
 
 The site includes canonical tags, robots directives, Open Graph metadata, Twitter cards, JSON-LD WebApplication/WebSite structured data, and a sitemap/robots file. Error pages are marked `noindex,nofollow,noarchive`.
 
