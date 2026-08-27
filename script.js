@@ -1,7 +1,7 @@
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const canvas=$("#memeCanvas"), ctx=canvas.getContext("2d");
 let image=null, bg="#ffffff", bgImage=null, ratio=1, texts=[], stickers=[], canvasImages=[], drawPaths=[], selectedText=0, selectedSticker=-1, selectedImage=-1, dragging=null, resizingSticker=null, resizingImage=null, resizingText=null, drawingPath=null, drawColor="#ff3b30", activeTool="text";
-
+let history=[], future=[];
 function stateSnapshot(){
  const cleanStickers=stickers.map(({char,src,x,y,size,custom})=>({char,src,x,y,size,custom}));
  const cleanImages=canvasImages.map(({src,x,y,w,h})=>({src,x,y,w,h}));
@@ -243,8 +243,9 @@ function addText(){
 
 function fileUpload(file){if(!file)return;const img=new Image();img.onload=()=>{image=img;texts=[{text:"TOP TEXT",x:.5,y:.12,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true},{text:"BOTTOM TEXT",x:.5,y:.88,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true}];selectedText=0;selectedSticker=-1;selectedImage=-1;drawPaths=[];canvasImages=[];$("#emptyCanvas").classList.add("hidden");$("#statusText").textContent="Custom image loaded";saveState();draw();updateEditor()};img.src=URL.createObjectURL(file)}
 
-$("#uploadBtn").onclick=$("#heroUpload").onclick=$("#emptyUpload").onclick=()=>$("#fileInput").click();
-$("#fileInput").onchange=e=>fileUpload(e.target.files[0]);
+["#heroUpload","#emptyUpload"].forEach(sel=>{const el=$(sel);if(el)el.onclick=e=>{e.preventDefault();$("#fileInput")?.click()}});
+const fileInput=$("#fileInput");
+if(fileInput) fileInput.onchange=e=>fileUpload(e.target.files[0]);
 $("#captionInput").oninput=e=>{if(!texts.length)addText();texts[selectedText].text=e.target.value;draw()};
 $("#fontSelect").onchange=e=>{if(texts[selectedText]){texts[selectedText].font=e.target.value;saveState();draw()}};
 $("#fontSize").oninput=e=>{if(texts[selectedText])texts[selectedText].size=+e.target.value;draw()};
@@ -802,11 +803,12 @@ canvas.addEventListener("pointercancel",e=>{
 
 canvas.addEventListener("dblclick",e=>{if(activeTool==="draw")return;const p=canvasPoint(e),found=hitTestText(p.x,p.y);if(found>=0)editTextOnCanvas(found)});
 window.addEventListener("keydown",e=>{
-  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z")$("#undoBtn").click();
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z")$("#undoBtn").click();
  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y")$("#redoBtn").click();
  if((e.key==="Delete"||e.key==="Backspace")&&!["INPUT","TEXTAREA"].includes(document.activeElement.tagName)){
    if(selectedImage>=0)deleteImage(selectedImage);
    else if(selectedSticker>=0)deleteObject("sticker",selectedSticker);
  }
 });
+
 resizeCanvas();
