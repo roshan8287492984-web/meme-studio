@@ -56,7 +56,6 @@
 </a>
 <nav class="nav">
 <a class="active" href="#create">Create</a>
-<a href="templates.html">Templates</a>
 <a href="#how">How it works</a>
 </nav>
 <div aria-label="Information pages" class="header-legal-links"><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a><a href="contact.html">Contact Us</a></div>
@@ -71,40 +70,15 @@
 <div>
 <div class="eyebrow"><span class="pulse"></span> Fast • Private • No signup</div>
 <h1>Meme Generator.<br/><em>Make it yours.</em></h1>
-<p>Choose a template, upload your own image, add captions and stickers, then export a clean meme in seconds.</p>
+<p>Upload your own image, add captions and stickers, then export a clean meme in seconds.</p>
 </div>
 <div class="hero-actions">
 <button class="upload-hero" id="heroUpload"><span>＋</span> Upload your image</button>
 <a class="editor-switch-btn" href="gif-editor.html">🎞️ Switch to GIF Meme Editor</a>
 </div>
 </section>
-<section class="workspace" id="templates">
-<aside class="panel left-panel">
-<div class="panel-heading">
-<div>
-<span class="section-kicker">01</span>
-<h2>Choose a template</h2>
-</div>
-<button class="text-btn" id="clearTemplate">Clear</button>
-</div>
-<label class="search-box">
-<span>⌕</span>
-<input id="templateSearch" placeholder="Search templates..."/>
-<kbd>/</kbd>
-</label>
-<div class="tabs">
-<button class="tab active" data-filter="all">Popular</button>
-<button class="tab" data-filter="classic">Classic</button>
-<button class="tab" data-filter="reaction">Reaction</button>
-</div>
-<div class="template-grid" id="templateGrid"></div>
-<a class="template-more template-more-bottom" href="templates.html" title="See more meme templates">See more <span>→</span></a>
-<button class="upload-card" id="uploadBtn">
-<span class="upload-icon">↥</span>
-<span><strong>Upload custom image</strong><small>PNG, JPG, WebP · stays on your device</small></span>
-</button>
+<section class="workspace">
 <input accept="image/png,image/jpeg,image/webp" hidden="" id="fileInput" type="file"/>
-</aside>
 <section class="canvas-panel">
 <div class="canvas-toolbar">
 <div class="canvas-status"><span class="green-dot"></span><span id="statusText">Ready to create</span></div>
@@ -120,7 +94,7 @@
 <div class="empty-canvas" id="emptyCanvas">
 <div class="empty-icon">✦</div>
 <h3>Start your meme</h3>
-<p>Pick a template or upload an image</p>
+<p>Upload an image to start</p>
 <button class="primary-btn" id="emptyUpload">Upload image</button>
 </div>
 </div>

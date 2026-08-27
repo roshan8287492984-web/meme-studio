@@ -1,94 +1,13 @@
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const canvas=$("#memeCanvas"), ctx=canvas.getContext("2d");
 let image=null, bg="#ffffff", bgImage=null, ratio=1, texts=[], stickers=[], canvasImages=[], drawPaths=[], selectedText=0, selectedSticker=-1, selectedImage=-1, dragging=null, resizingSticker=null, resizingImage=null, resizingText=null, drawingPath=null, drawColor="#ff3b30", activeTool="text";
-let history=[], future=[], selectedTemplate=-1;
-
-let templates=[];
-const TEMPLATE_API='/api/templates';
-function categoryForTemplate(t,index){
- const n=String(t.name||'').toLowerCase();
- const reaction=/drake|distracted boyfriend|woman yelling|change my mind|gru|surprised|confused|disaster girl|success kid|one does not simply|doge|mocking spongebob|always has been|trade offer|reaction|crying|laughing|face|who would win|expanding brain/.test(n);
- const classic=/classic|most interesting man|philosoraptor|bad luck brian|scumbag steve|success kid|y u no|futurama fry|condescending wonka|boardroom|waiting skeleton|ancient aliens|oprah|fine|left exit 12 off ramp|this is fine|two buttons|expanding brain|one does not simply/.test(n);
- if(index < 12) return 'popular';
- if(reaction) return 'reaction';
- if(classic) return 'classic';
- return index % 2 ? 'classic' : 'reaction';
-}
-
-function templateSvg(t){
- const esc=v=>String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
- const title=esc(t.title), sub=esc(t.subtitle);
- const common=`<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${t.bg1}"/><stop offset="1" stop-color="${t.bg2}"/></linearGradient></defs><rect width="300" height="300" rx="14" fill="url(#g)"/>`;
- const label=(text,y,size=22,opacity=1)=>`<text x="150" y="${y}" text-anchor="middle" fill="white" opacity="${opacity}" font-family="Arial Black,Arial" font-size="${size}" font-weight="900">${text}</text>`;
- let art="";
- switch(t.style){
-   case "choices": art=`<rect x="22" y="62" width="108" height="165" rx="14" fill="#ffffff" opacity=".18"/><rect x="170" y="62" width="108" height="165" rx="14" fill="#ffffff" opacity=".18"/><circle cx="76" cy="116" r="27" fill="#fff" opacity=".9"/><circle cx="224" cy="116" r="27" fill="#fff" opacity=".9"/>${label("A",174,34)}${label("B",174,34)}`; break;
-   case "brain": art=`<ellipse cx="150" cy="130" rx="92" ry="68" fill="#fff" opacity=".16"/><path d="M75 132 C70 92 105 69 139 91 C157 62 202 83 195 115 C225 126 208 171 177 166 C157 196 112 187 108 159 C84 163 67 149 75 132Z" fill="#fff" opacity=".28"/>`; break;
-   case "panels": art=`<rect x="16" y="48" width="126" height="98" rx="8" fill="#fff" opacity=".18"/><rect x="158" y="48" width="126" height="98" rx="8" fill="#fff" opacity=".12"/><rect x="16" y="158" width="126" height="98" rx="8" fill="#fff" opacity=".12"/><rect x="158" y="158" width="126" height="98" rx="8" fill="#fff" opacity=".2"/>`; break;
-   case "success": art=`<circle cx="150" cy="137" r="76" fill="#fff" opacity=".16"/><path d="M112 140 l24 24 55-64" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>`; break;
-   case "confused": art=`<circle cx="150" cy="137" r="78" fill="#fff" opacity=".17"/><circle cx="120" cy="125" r="9" fill="#fff"/><circle cx="180" cy="125" r="9" fill="#fff"/><path d="M118 168 Q150 145 182 168" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>`; break;
-   case "twist": art=`<path d="M55 215 L150 62 L245 215 Z" fill="#fff" opacity=".15"/><path d="M104 170 L138 202 L199 115" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>`; break;
-   case "sign": art=`<rect x="42" y="88" width="216" height="108" rx="12" fill="#fff" opacity=".18"/><rect x="65" y="195" width="170" height="13" rx="6" fill="#fff" opacity=".3"/>`; break;
-   case "buttons": art=`<circle cx="102" cy="144" r="55" fill="#fff" opacity=".16"/><circle cx="198" cy="144" r="55" fill="#fff" opacity=".16"/><path d="M82 124 L122 164 M122 124 L82 164 M178 124 L218 164 M218 124 L178 164" stroke="#fff" stroke-width="9" stroke-linecap="round"/>`; break;
-   case "face": art=`<circle cx="150" cy="140" r="78" fill="#fff" opacity=".17"/><circle cx="120" cy="128" r="9" fill="#fff"/><circle cx="180" cy="128" r="9" fill="#fff"/><path d="M110 166 Q150 198 190 166" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>`; break;
-   case "expectation": art=`<rect x="18" y="70" width="120" height="165" rx="10" fill="#fff" opacity=".18"/><rect x="162" y="70" width="120" height="165" rx="10" fill="#fff" opacity=".09"/><text x="78" y="154" text-anchor="middle" fill="#fff" font-size="17" font-weight="900">EXPECT</text><text x="222" y="154" text-anchor="middle" fill="#fff" font-size="17" font-weight="900">REALITY</text>`; break;
-   case "blank": art=`<rect x="24" y="70" width="252" height="160" rx="14" fill="#fff" opacity=".12"/>`; break;
-   default: art=`<circle cx="240" cy="65" r="45" fill="#fff" opacity=".10"/><circle cx="55" cy="250" r="70" fill="#fff" opacity=".07"/>`;
- }
- return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">${common}${art}${label(title,42,18)}${sub?label(sub,274,11,.72):label("CLICK TO USE",274,10,.62)}</svg>`;
-}
-
-function svgToData(svg){return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg)}
-
-function renderTemplates(filter="all"){
- const q=$("#templateSearch").value.toLowerCase();
- const matching=templates.map((t,index)=>({t,index})).filter(({t})=>(filter==="all"||t.category===filter)&&t.name.toLowerCase().includes(q));
- // Keep the editor panel compact. The full library is available from the “See more” button below.
- // Search can reveal a few more results, but never turns the editor into a long scrolling gallery.
- const limit=q ? 10 : 8;
- const visible=matching.slice(0,limit);
- const more=matching.length>limit;
- $("#templateGrid").innerHTML=visible.map(({t,index})=>`
- <button type="button" class="template-card ${selectedTemplate===index?"active":""}" data-index="${index}" aria-label="Use ${t.name} template">
-   <div class="template-thumb">
-     <img loading="lazy" src="${t.url}" alt="${t.name} meme template">
-     <span class="template-use">Use</span>
-   </div>
-   <div class="template-name"><span>${t.name}</span><small>${t.category === "reaction" ? "Reaction" : t.category === "classic" ? "Classic" : "Popular"}</small></div>
- </button>`).join("") || '<div class="template-empty">No templates found. Try another search.</div>';
- $$(".template-card").forEach(b=>b.onclick=()=>loadTemplate(+b.dataset.index));
-}
-async function loadTemplateFeed(){
- try{
-   const res=await fetch(TEMPLATE_API+"?type=image",{cache:"no-store"});
-   if(!res.ok) throw new Error("Template API returned "+res.status);
-   const data=await res.json();
-   if(!data.success) throw new Error(data.error_message||"Template API request failed");
-   const raw=data.data?.memes||[];
-   const seen=new Set();
-   templates=raw.map((t,i)=>({...t,category:categoryForTemplate(t,i)})).filter(t=>{if(seen.has(t.id))return false;seen.add(t.id);return true;});
-   renderTemplates();
- }catch(err){
-   console.error("Template loading error:",err);
-   $("#templateGrid").innerHTML='<div class="template-empty">Could not load meme templates right now. Please refresh and try again.</div>';
- }
-}
-function loadTemplate(i){
- const t=templates[i]; if(!t)return; selectedTemplate=i; const img=new Image();
- img.crossOrigin="anonymous";
- img.onload=()=>{image=img; $("#emptyCanvas").classList.add("hidden"); $("#statusText").textContent=t.name+" template selected"; texts=[{text:"TOP TEXT",x:.5,y:.12,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true},{text:"BOTTOM TEXT",x:.5,y:.88,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true}];selectedText=0;selectedSticker=-1;selectedImage=-1;drawPaths=[];canvasImages=[];ratio=(t.width&&t.height)?t.width/t.height:1;resizeCanvas();saveState();draw()};
- img.onerror=()=>{$("#statusText").textContent="Could not load this template";};
- img.src=t.url;
- $$(".template-card").forEach(x=>x.classList.remove("active"));
- const card=$(`.template-card[data-index="${i}"]`); if(card)card.classList.add("active");
-}
 
 function stateSnapshot(){
  const cleanStickers=stickers.map(({char,src,x,y,size,custom})=>({char,src,x,y,size,custom}));
  const cleanImages=canvasImages.map(({src,x,y,w,h})=>({src,x,y,w,h}));
  const bgImageState=bgImage?.src||null;
  const imageState=image?.src||null;
- return JSON.stringify({texts,stickers:cleanStickers,canvasImages:cleanImages,drawPaths,bg,bgImage:bgImageState,image:imageState,ratio,drawColor,selectedTemplate});
+ return JSON.stringify({texts,stickers:cleanStickers,canvasImages:cleanImages,drawPaths,bg,bgImage:bgImageState,image:imageState,ratio,drawColor});
 }
 function saveState(){
  history.push(stateSnapshot());
@@ -108,7 +27,7 @@ function restore(s){
    const img=new Image(); img.onload=()=>draw(); img.src=im.src; im.image=img; return im;
  });
  drawPaths=o.drawPaths||[];
- bg=o.bg||"#ffffff"; ratio=o.ratio||1; drawColor=o.drawColor||"#ff3b30"; selectedTemplate=o.selectedTemplate??-1;
+ bg=o.bg||"#ffffff"; ratio=o.ratio||1; drawColor=o.drawColor||"#ff3b30";
  image=null;
  if(o.image){const ii=new Image();ii.onload=()=>draw();ii.src=o.image;image=ii;}
  bgImage=null;
@@ -324,8 +243,6 @@ function addText(){
 
 function fileUpload(file){if(!file)return;const img=new Image();img.onload=()=>{image=img;texts=[{text:"TOP TEXT",x:.5,y:.12,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true},{text:"BOTTOM TEXT",x:.5,y:.88,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true}];selectedText=0;selectedSticker=-1;selectedImage=-1;drawPaths=[];canvasImages=[];$("#emptyCanvas").classList.add("hidden");$("#statusText").textContent="Custom image loaded";saveState();draw();updateEditor()};img.src=URL.createObjectURL(file)}
 
-$("#templateSearch").oninput=()=>renderTemplates($(".tab.active").dataset.filter);
-$$(".tab").forEach(b=>b.onclick=()=>{$$(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderTemplates(b.dataset.filter)});
 $("#uploadBtn").onclick=$("#heroUpload").onclick=$("#emptyUpload").onclick=()=>$("#fileInput").click();
 $("#fileInput").onchange=e=>fileUpload(e.target.files[0]);
 $("#captionInput").oninput=e=>{if(!texts.length)addText();texts[selectedText].text=e.target.value;draw()};
@@ -368,8 +285,7 @@ $("#deleteTextBtn").onclick=()=>{
 };
 
 $("#opacityRange").oninput=e=>{$("#opacityValue").textContent=e.target.value+"%";draw()};
-$("#resetBtn").onclick=()=>{image=null;bgImage=null;texts=[];stickers=[];selectedTemplate=-1;bg="#ffffff";updateBackgroundUI();selectedSticker=-1;$("#emptyCanvas").classList.remove("hidden");$("#statusText").textContent="Ready to create";$("#clearBgImageBtn").hidden=true;draw()};
-$("#clearTemplate").onclick=()=>{selectedTemplate=-1;renderTemplates($(".tab.active").dataset.filter);$("#resetBtn").click()};
+$("#resetBtn").onclick=()=>{image=null;bgImage=null;texts=[];stickers=[];bg="#ffffff";updateBackgroundUI();selectedSticker=-1;$("#emptyCanvas").classList.remove("hidden");$("#statusText").textContent="Ready to create";$("#clearBgImageBtn").hidden=true;draw()};
 $("#downloadBtn").onclick=$("#downloadTop").onclick=download;
 $("#copyBtn").onclick=async()=>{try{const b=await new Promise(r=>canvas.toBlob(r,"image/png"));await navigator.clipboard.write([new ClipboardItem({"image/png":b})]);$("#copyBtn").textContent="Copied ✓";setTimeout(()=>$("#copyBtn").textContent="Copy to clipboard",1400)}catch(e){alert("Clipboard access is not available in this browser.")}};
 $("#undoBtn").onclick=()=>{if(history.length>1){future.push(history.pop());restore(history[history.length-1])}};
@@ -886,30 +802,11 @@ canvas.addEventListener("pointercancel",e=>{
 
 canvas.addEventListener("dblclick",e=>{if(activeTool==="draw")return;const p=canvasPoint(e),found=hitTestText(p.x,p.y);if(found>=0)editTextOnCanvas(found)});
 window.addEventListener("keydown",e=>{
- if(e.key==="/"&&!["INPUT","TEXTAREA"].includes(document.activeElement.tagName)){e.preventDefault();$("#templateSearch").focus()}
- if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z")$("#undoBtn").click();
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z")$("#undoBtn").click();
  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y")$("#redoBtn").click();
  if((e.key==="Delete"||e.key==="Backspace")&&!["INPUT","TEXTAREA"].includes(document.activeElement.tagName)){
    if(selectedImage>=0)deleteImage(selectedImage);
    else if(selectedSticker>=0)deleteObject("sticker",selectedSticker);
  }
 });
-
-async function loadRemoteTemplate(){
- const raw=localStorage.getItem("memeStudioRemoteTemplate");
- if(!raw)return;
- localStorage.removeItem("memeStudioRemoteTemplate");
- let t; try{t=JSON.parse(raw)}catch(_){return}
- if(!t?.url)return;
- const img=new Image();
- img.crossOrigin="anonymous";
- img.onload=()=>{image=img;bgImage=null;$("#emptyCanvas")?.classList.add("hidden");$("#statusText").textContent=t.name+(t.kind==="gif"?" GIF template selected":" template selected");texts=[{text:"TOP TEXT",x:.5,y:.12,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true},{text:"BOTTOM TEXT",x:.5,y:.88,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true}];selectedText=0;selectedSticker=-1;selectedImage=-1;drawPaths=[];canvasImages=[];ratio=t.width/t.height;resizeCanvas();saveState();draw();updateEditor?.(); if(t.kind==="gif") $("#statusText").textContent="GIF template loaded (canvas export uses the current frame)"};
- img.onerror=()=>{alert("This template could not be loaded. Please try another template or upload the image directly.")};
- img.src=t.url;
-}
-loadTemplateFeed();resizeCanvas();
-loadRemoteTemplate();
-const requestedTemplate=new URLSearchParams(location.search).get("template");
-if(requestedTemplate!==null && Number.isInteger(Number(requestedTemplate))){
-  setTimeout(()=>loadTemplate(Number(requestedTemplate)),0);
-}
+resizeCanvas();
