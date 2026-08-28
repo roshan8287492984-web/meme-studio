@@ -4,6 +4,10 @@ let image=null, bg="#ffffff", bgImage=null, ratio=1, texts=[], stickers=[], canv
 let history=[], future=[], selectedTemplate=-1;
 let gifMode=false, gifFrames=[], gifFrameIndex=0, gifFrameTimer=null, gifTextColor="#ffffff", gifFrameCanvas=null, gifFrameCtx=null;
 
+const SUPABASE_URL="https://dlqqodmaqtsekirkcjee.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_LsZ4J1J5hLGF1V3OBj-tJg_wBThVUhI";
+let gifRemoteTemplates=[];
+
 const templates=[
  {name:"Classic Meme",type:"classic",style:"classic",bg1:"#6d5dfc",bg2:"#1e1b4b",title:"CLASSIC MEME",subtitle:"YOUR IDEA HERE"},
  {name:"Two Choices",type:"classic",style:"choices",bg1:"#ff8a4c",bg2:"#4b1d3f",title:"ME TRYING TO DECIDE",subtitle:"OPTION A / OPTION B"},
@@ -140,6 +144,60 @@ $("#customFontInput").onchange=e=>{
  e.target.value="";
 };
 
+function escHtml(value){return String(value??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
+function renderGifTemplateLibrary(){
+  const grid=$("#gifTemplateGrid"), loading=$("#gifTemplateLoading");
+  if(!grid)return;
+  const q=$("#gifTemplateSearch")?.value.trim().toLowerCase()||"";
+  const active=$("#gifTemplateTabs .tab.active")?.dataset.category||"all";
+  const list=gifRemoteTemplates.filter(t=>{
+    const hay=[t.title,t.description,t.category].filter(Boolean).join(" ").toLowerCase();
+    return (!q||hay.includes(q)) && (active==="all"||String(t.category||"").toLowerCase()===active);
+  });
+  grid.innerHTML=list.length?list.map(t=>`<article class="template-card" tabindex="0" role="button" data-id="${escHtml(t.id)}"><div class="template-thumb"><img loading="lazy" src="${escHtml(t.thumbnail_url||t.image_url)}" alt="${escHtml(t.title)}" referrerpolicy="no-referrer"><span class="template-use">Use GIF</span></div><div class="template-name">${escHtml(t.title)}<small>GIF</small></div></article>`).join(""):`<div class="template-empty">No GIF templates found yet. Add GIFs to the <strong>gif_templates</strong> table in Supabase, then refresh.</div>`;
+  grid.querySelectorAll(".template-card").forEach(card=>{
+    const use=()=>selectRemoteGifTemplate(card.dataset.id);
+    card.addEventListener("click",use);card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();use();}});
+  });
+  if(loading)loading.hidden=true;
+}
+function selectRemoteGifTemplate(id){
+  const t=gifRemoteTemplates.find(x=>String(x.id)===String(id));
+  if(!t?.image_url)return;
+  localStorage.setItem("memeStudioRemoteGifTemplate",JSON.stringify(t));
+  loadRemoteGifTemplate(t);
+}
+async function loadGifTemplateLibrary(){
+  const grid=$("#gifTemplateGrid"),loading=$("#gifTemplateLoading");
+  if(!grid)return;
+  try{
+    const url=SUPABASE_URL+"/rest/v1/gif_templates?select=id,title,image_url,thumbnail_url,description,category,width,height&active=eq.true&order=sort_order.asc,id.asc";
+    const res=await fetch(url,{cache:"no-store",headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});
+    if(!res.ok)throw new Error("Supabase returned "+res.status);
+    gifRemoteTemplates=await res.json();
+    renderGifTemplateLibrary();
+  }catch(err){
+    console.error("GIF template loading error:",err);
+    if(loading)loading.hidden=true;
+    grid.innerHTML='<div class="template-empty">Could not load GIF templates. Check the Supabase <strong>gif_templates</strong> table and its public SELECT policy.</div>';
+  }
+}
+async function loadRemoteGifTemplate(t){
+  try{
+    if(!t?.image_url)return;
+    $("#statusText").textContent="Loading GIF template…";
+    const res=await fetch(t.image_url,{mode:"cors",cache:"no-store"});
+    if(!res.ok)throw new Error("GIF template request failed: "+res.status);
+    const blob=await res.blob();
+    const file=new File([blob],(t.title||"gif-template").replace(/[^a-z0-9_-]+/gi,"-")+".gif",{type:"image/gif"});
+    await loadGifFile(file);
+    $("#statusText").textContent=(t.title||"GIF template")+" loaded";
+  }catch(err){
+    console.error("GIF template load error:",err);
+    alert("This GIF template could not be loaded. Make sure the GIF is stored in Supabase Storage or another CORS-enabled URL.");
+    $("#statusText").textContent="Ready to create";
+  }
+}
 function stopGifPreview(){
   if(gifFrameTimer){clearTimeout(gifFrameTimer);gifFrameTimer=null;}
 }
@@ -549,8 +607,24 @@ $("#downloadBtn").onclick=$("#downloadTop").onclick=download;
 $("#copyBtn").onclick=async()=>{try{const b=await new Promise(r=>canvas.toBlob(r,"image/png"));await navigator.clipboard.write([new ClipboardItem({"image/png":b})]);$("#copyBtn").textContent="Copied ✓";setTimeout(()=>$("#copyBtn").textContent="Copy to clipboard",1400)}catch(e){alert("Clipboard access is not available in this browser.")}};
 $("#undoBtn").onclick=()=>{if(history.length>1){future.push(history.pop());restore(history[history.length-1])}};
 $("#redoBtn").onclick=()=>{if(future.length){const s=future.pop();history.push(s);restore(s)}};
-$("#themeToggle").onclick=()=>{document.body.classList.toggle("dark");$("#themeToggle").textContent=document.body.classList.contains("dark")?"🌙":"☀️";localStorage.theme=document.body.classList.contains("dark")?"dark":"light"};
-if(localStorage.theme==="dark"){document.body.classList.add("dark");$("#themeToggle").textContent="🌙"}
+const themeToggle = $("#themeToggle") || $("#theme");
+function applyTheme(theme){
+  const isDark = theme === "dark";
+  document.body.classList.toggle("dark", isDark);
+  if(themeToggle){
+    themeToggle.textContent = isDark ? "🌙" : "☀️";
+    themeToggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    themeToggle.setAttribute("title", isDark ? "Switch to light mode" : "Switch to dark mode");
+  }
+}
+if(themeToggle){
+  themeToggle.addEventListener("click",()=>{
+    const nextTheme = document.body.classList.contains("dark") ? "light" : "dark";
+    localStorage.setItem("theme", nextTheme);
+    applyTheme(nextTheme);
+  });
+}
+applyTheme(localStorage.getItem("theme") === "dark" ? "dark" : "light");
 updateGifUI();
 $$(".editor-tab").forEach(b=>b.onclick=()=>{$$(".editor-tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");["text","style","canvas"].forEach(x=>$("#"+x+"Editor").classList.add("hidden"));$("#"+b.dataset.editor+"Editor").classList.remove("hidden")});
 $$(".swatch").forEach(b=>b.onclick=()=>{$$(".swatch").forEach(x=>x.classList.remove("active"));b.classList.add("active");$("#textColor").value=b.dataset.color;if(texts[selectedText])texts[selectedText].color=b.dataset.color;draw()});
@@ -1084,3 +1158,14 @@ async function loadRemoteTemplate(){
 }
 resizeCanvas();
 loadRemoteTemplate();
+loadGifTemplateLibrary();
+(function(){
+  const q=$("#gifTemplateSearch");
+  q?.addEventListener("input",renderGifTemplateLibrary);
+  $$("#gifTemplateTabs .tab").forEach(tab=>tab.addEventListener("click",()=>{
+    $$("#gifTemplateTabs .tab").forEach(t=>t.classList.remove("active"));tab.classList.add("active");renderGifTemplateLibrary();
+  }));
+  $("#gifTemplateUpload")?.addEventListener("click",()=>$("#fileInput")?.click());
+  const raw=localStorage.getItem("memeStudioRemoteGifTemplate");
+  if(raw){localStorage.removeItem("memeStudioRemoteGifTemplate");try{loadRemoteGifTemplate(JSON.parse(raw));}catch(_){} }
+})();

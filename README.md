@@ -20,3 +20,8 @@ Favicon: Option 3 classic meme face. Favicon filenames are versioned to prevent 
 
 ## Template API / SEO fix
 The live template pages now call the same-origin `/api/templates` endpoint. Netlify proxies that endpoint to Imgflip, so browser JavaScript no longer directly calls `api.imgflip.com`. The Templates page also contains crawlable static template-format content and supports `?q=` links for internal template searches.
+## SEO notes
+- `templates.html` includes canonical, Open Graph, Twitter, robots, hreflang, WebPage, CollectionPage and BreadcrumbList metadata.
+- `sitemap.xml` includes the templates page.
+- `robots.txt` references the sitemap and excludes error pages.
+- The live template cards are loaded from Supabase in the browser; the page also includes crawlable introductory/noscript content for search engines.

@@ -47,8 +47,27 @@
 @media(max-width:760px){.index-header{flex-wrap:wrap;margin-bottom:28px}.index-header .brand{width:auto}.index-header .header-legal-links{width:100%;margin-left:0}}
 </style>
 </link></meta><meta content="Create animated GIF memes with Meme Studio. Upload a GIF, add captions, stickers and styling, then export your finished meme." name="description"/><meta content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" name="robots"/><link href="https://www.freememeai.com/gif-editor.html" rel="canonical"/><meta content="website" property="og:type"/><meta content="GIF Meme Generator | Free Animated Meme Maker - Meme Studio" property="og:title"/><meta content="Create animated GIF memes with Meme Studio. Upload a GIF, add captions, stickers and styling, then export your finished meme." property="og:description"/><meta content="https://www.freememeai.com/gif-editor.html" property="og:url"/><meta content="Meme Studio" property="og:site_name"/><meta content="https://www.freememeai.com/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="image/png" property="og:image:type"/><meta content="en_US" property="og:locale"/><meta content="summary" name="twitter:card"/><meta content="https://www.freememeai.com/og-image.png" name="twitter:image"/><meta content="GIF Meme Generator | Free Animated Meme Maker - Meme Studio" name="twitter:title"/><meta content="Create animated GIF memes with Meme Studio. Upload a GIF, add captions, stickers and styling, then export your finished meme." name="twitter:description"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Meme Studio GIF Meme Generator","applicationCategory":"MultimediaApplication","operatingSystem":"Web Browser","browserRequirements":"Requires JavaScript","description":"Create animated GIF memes with Meme Studio. Upload a GIF, add captions, stickers and styling, then export your finished meme.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<style id="gif-template-library-style">
+.gif-workspace{grid-template-columns:315px minmax(420px,1fr) 315px}
+.gif-template-panel{min-height:680px}
+.gif-template-panel .template-grid{max-height:390px;overflow:auto}
+.gif-template-panel .template-card{cursor:pointer}
+.gif-template-panel .template-card img{display:block;width:100%;height:100%;object-fit:cover}
+.gif-template-panel .template-empty{grid-column:1/-1}
+@media(max-width:1150px){.gif-workspace{grid-template-columns:minmax(360px,1fr) 300px}.gif-template-panel{grid-column:1/-1;min-height:auto;order:1}.gif-workspace .canvas-panel{order:2}.gif-workspace .right-panel{order:3}.gif-template-panel .template-grid{max-height:none}.gif-template-panel .template-card:nth-child(n+9){display:none}}
+@media(max-width:800px){.gif-workspace{grid-template-columns:1fr}.gif-template-panel,.gif-workspace .canvas-panel,.gif-workspace .right-panel{grid-column:auto;order:initial}.gif-template-panel{min-height:auto}}
+</style>
 <style id="hero-heading-cursor-fix">.hero h1{cursor:default!important;user-select:none;-webkit-user-select:none;-moz-user-select:none;caret-color:transparent}</style>
+<style id="explore-templates-style">
+.explore-templates{margin-top:10px;display:flex;align-items:center;gap:10px;width:100%;min-height:54px;padding:10px 12px;border:1px solid #34313f;border-radius:12px;background:#19181f;color:#f5f4fa;text-decoration:none;transition:transform .18s,border-color .18s,background .18s,box-shadow .18s;box-sizing:border-box}
+.explore-templates:hover{transform:translateY(-1px);border-color:#6d5dfc;background:#211f2a;box-shadow:0 8px 22px rgba(109,93,252,.16)}
+.explore-templates>span:first-child{width:30px;height:30px;border-radius:9px;background:#292544;color:#a99fff;display:grid;place-items:center;font-weight:900;flex:0 0 30px}
+.explore-templates strong{display:block;font-size:12px;line-height:1.2}.explore-templates small{display:block;margin-top:3px;color:#9b99a7;font-size:9px}.explore-arrow{margin-left:auto;color:#aaa0ff;font-size:18px;font-weight:800}
+@media(max-width:600px){.explore-templates{min-height:52px}}
+</style>
 <!-- Meme Studio favicon -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="manifest" href="site.webmanifest">
 </head>
 <body><button aria-label="Go back" class="site-back-btn" onclick="if(history.length&gt;1){history.back()}else{location.href='index.html'}" type="button">← Back</button>
 <input accept="image/gif,.gif" hidden="" id="fileInput" type="file"/>
@@ -80,7 +99,24 @@
 <a class="editor-switch-btn" href="meme-editor.html">🖼️ Switch to Image Meme Editor</a>
 </div>
 </section>
-<section class="workspace" id="create">
+<section class="workspace gif-workspace" id="create">
+<aside class="panel left-panel gif-template-panel" aria-labelledby="gifTemplatesHeading">
+<div class="panel-heading">
+<div><span class="section-kicker">01</span><h2 id="gifTemplatesHeading">Choose a GIF template</h2></div>
+</div>
+<div class="search-box"><span aria-hidden="true">⌕</span><input id="gifTemplateSearch" type="search" placeholder="Search GIF templates..." autocomplete="off"/></div>
+<div class="tabs" id="gifTemplateTabs" role="tablist" aria-label="GIF template categories">
+<button class="tab active" data-category="all" type="button">All</button>
+<button class="tab" data-category="popular" type="button">Popular</button>
+<button class="tab" data-category="reaction" type="button">Reaction</button>
+</div>
+<div class="template-grid" id="gifTemplateGrid" aria-live="polite"></div>
+<div class="template-loading" id="gifTemplateLoading">Loading GIF templates...</div>
+<a class="explore-templates" href="gif-templates.html" id="exploreGifTemplates">
+<span>✦</span><span><strong>Explore all templates</strong><small>See the complete template library</small></span><span class="explore-arrow">→</span>
+</a>
+<button class="upload-card" id="gifTemplateUpload" type="button"><span class="upload-icon">＋</span><span><strong>Upload your own GIF</strong><small>GIF files only</small></span></button>
+</aside>
 <section class="canvas-panel">
 <div class="canvas-toolbar">
 <div class="canvas-status"><span class="green-dot"></span><span id="statusText">Ready to create</span></div>

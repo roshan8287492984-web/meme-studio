@@ -258,6 +258,20 @@ function templateImage(src, onReady, onError){
   return img;
 }
 
+function loadRemoteTemplateFromStorage(){
+  const params=new URLSearchParams(location.search);
+  if(params.get("remoteTemplate")!=="1") return;
+  try{
+    const raw=localStorage.getItem("memeStudioRemoteTemplate");
+    if(!raw) return;
+    const t=JSON.parse(raw);
+    if(t && (t.image_url||t.thumbnail_url)){
+      setMemeImageFromUrl(t.image_url||t.thumbnail_url,t.title||"Meme template");
+      localStorage.removeItem("memeStudioRemoteTemplate");
+    }
+  }catch(err){console.warn("Could not open selected template:",err)}
+}
+
 function setMemeImageFromUrl(url, title="Meme template") {
   if(!url) return;
   const img = templateImage(url, img => {
@@ -313,8 +327,8 @@ async function loadMemeTemplates(){
   const grid=$("#templateGrid"), loading=$("#templateLoading");
   if(!grid) return;
   try{
-    const url=SUPABASE_URL+"/rest/v1/memes?select=id,created_at,title,image_url,description,category,tags,type,thumbnail_url,is_active,sort_order&is_active=eq.true&order=sort_order.asc,id.asc";
-    const res=await fetch(url,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:"Bearer "+SUPABASE_PUBLISHABLE_KEY}});
+    const url=SUPABASE_URL+"/rest/v1/memes?select=id,created_at,title,image_url,description,category&order=id.asc";
+    const res=await fetch(url,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});
     if(!res.ok) throw new Error("Supabase returned "+res.status);
     memeTemplates=await res.json();
     renderTemplateGrid();
@@ -333,6 +347,7 @@ $$("#templateTabs .tab").forEach(btn=>btn.addEventListener("click",()=>{
 }));
 $("#templateUpload")?.addEventListener("click",()=>$("#fileInput")?.click());
 loadMemeTemplates();
+loadRemoteTemplateFromStorage();
 
 ["#heroUpload","#emptyUpload"].forEach(sel=>{const el=$(sel);if(el)el.onclick=e=>{e.preventDefault();$("#fileInput")?.click()}});
 const fileInput=$("#fileInput");
