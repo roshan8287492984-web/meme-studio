@@ -79,6 +79,26 @@
 </section>
 <section class="workspace">
 <input accept="image/png,image/jpeg,image/webp" hidden="" id="fileInput" type="file"/>
+<aside class="panel left-panel">
+<div class="panel-heading">
+<div><span class="section-kicker">01</span><h2>Choose a meme</h2></div>
+</div>
+<div class="search-box">
+<span aria-hidden="true">⌕</span>
+<input id="templateSearch" type="search" placeholder="Search templates..." autocomplete="off"/>
+</div>
+<div class="tabs" id="templateTabs" role="tablist" aria-label="Meme template categories">
+<button class="tab active" data-category="all" type="button">All</button>
+<button class="tab" data-category="popular" type="button">Popular</button>
+<button class="tab" data-category="reaction" type="button">Reaction</button>
+</div>
+<div class="template-grid" id="templateGrid" aria-live="polite"></div>
+<div class="template-loading" id="templateLoading">Loading templates...</div>
+<button class="upload-card" id="templateUpload" type="button">
+<span class="upload-icon">＋</span>
+<span><strong>Upload your own image</strong><small>PNG, JPG or WEBP</small></span>
+</button>
+</aside>
 <section class="canvas-panel">
 <div class="canvas-toolbar">
 <div class="canvas-status"><span class="green-dot"></span><span id="statusText">Ready to create</span></div>

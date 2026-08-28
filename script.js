@@ -242,6 +242,97 @@ function addText(){
 }
 
 function fileUpload(file){if(!file)return;const img=new Image();img.onload=()=>{image=img;texts=[{text:"TOP TEXT",x:.5,y:.12,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true},{text:"BOTTOM TEXT",x:.5,y:.88,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true}];selectedText=0;selectedSticker=-1;selectedImage=-1;drawPaths=[];canvasImages=[];$("#emptyCanvas").classList.add("hidden");$("#statusText").textContent="Custom image loaded";saveState();draw();updateEditor()};img.src=URL.createObjectURL(file)}
+// --- Supabase meme templates -------------------------------------------------
+// This is the browser-safe Publishable key. Never put a Supabase secret key here.
+const SUPABASE_URL = "https://dlqqodmaqtsekirkcjee.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_LsZ4J1J5hLGF1V3OBj-tJg_wBThVUhI";
+let memeTemplates = [];
+let activeTemplateCategory = "all";
+
+function templateImage(src, onReady, onError){
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = () => onReady(img);
+  img.onerror = () => onError?.();
+  img.src = src;
+  return img;
+}
+
+function setMemeImageFromUrl(url, title="Meme template") {
+  if(!url) return;
+  const img = templateImage(url, img => {
+    image = img;
+    texts = [
+      {text:"TOP TEXT",x:.5,y:.12,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true},
+      {text:"BOTTOM TEXT",x:.5,y:.88,size:64,color:"#fff",outline:8,font:"Impact",shadow:"soft",bold:false,uppercase:true}
+    ];
+    selectedText=0; selectedSticker=-1; selectedImage=-1; drawPaths=[]; canvasImages=[];
+    $("#emptyCanvas")?.classList.add("hidden");
+    $("#statusText").textContent = title + " loaded";
+    saveState(); draw(); updateEditor();
+  }, () => {
+    alert("This template image could not be loaded. The image host may block browser access (CORS). Please try another template or upload the image yourself.");
+  });
+}
+
+function templateMatches(t){
+  const q=( $("#templateSearch")?.value || "" ).trim().toLowerCase();
+  const hay=[t.title,t.description,t.category,t.tags,t.type].filter(Boolean).join(" ").toLowerCase();
+  if(q && !hay.includes(q)) return false;
+  if(activeTemplateCategory!=="all" && !(String(t.category||"").toLowerCase()===activeTemplateCategory || String(t.tags||"").toLowerCase().includes(activeTemplateCategory))) return false;
+  return true;
+}
+
+function renderTemplateGrid(){
+  const grid=$("#templateGrid"), loading=$("#templateLoading");
+  if(!grid) return;
+  const items=memeTemplates.filter(templateMatches);
+  grid.innerHTML="";
+  if(loading) loading.classList.add("hidden");
+  if(!items.length){
+    grid.innerHTML='<div class="template-empty">No templates found.</div>';
+    return;
+  }
+  items.forEach(t=>{
+    const card=document.createElement("button");
+    card.type="button"; card.className="template-card";
+    card.title=t.title||"Use template";
+    const thumb=document.createElement("div"); thumb.className="template-thumb";
+    const img=document.createElement("img"); img.alt=t.title||"Meme template"; img.loading="lazy"; img.referrerPolicy="no-referrer";
+    img.src=t.thumbnail_url||t.image_url||"";
+    thumb.appendChild(img);
+    const use=document.createElement("span"); use.className="template-use"; use.textContent="Use template";
+    const name=document.createElement("div"); name.className="template-name"; name.textContent=t.title||"Untitled meme";
+    card.append(thumb,use,name);
+    card.addEventListener("click",()=>setMemeImageFromUrl(t.image_url||t.thumbnail_url,t.title||"Meme template"));
+    grid.appendChild(card);
+  });
+}
+
+async function loadMemeTemplates(){
+  const grid=$("#templateGrid"), loading=$("#templateLoading");
+  if(!grid) return;
+  try{
+    const url=SUPABASE_URL+"/rest/v1/memes?select=id,created_at,title,image_url,description,category,tags,type,thumbnail_url,is_active,sort_order&is_active=eq.true&order=sort_order.asc,id.asc";
+    const res=await fetch(url,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:"Bearer "+SUPABASE_PUBLISHABLE_KEY}});
+    if(!res.ok) throw new Error("Supabase returned "+res.status);
+    memeTemplates=await res.json();
+    renderTemplateGrid();
+  }catch(err){
+    console.error("Could not load meme templates:",err);
+    if(loading) loading.textContent="Templates could not be loaded. Check the Supabase Data API and table access.";
+  }
+}
+
+$("#templateSearch")?.addEventListener("input",renderTemplateGrid);
+$$("#templateTabs .tab").forEach(btn=>btn.addEventListener("click",()=>{
+  $$("#templateTabs .tab").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  activeTemplateCategory=btn.dataset.category||"all";
+  renderTemplateGrid();
+}));
+$("#templateUpload")?.addEventListener("click",()=>$("#fileInput")?.click());
+loadMemeTemplates();
 
 ["#heroUpload","#emptyUpload"].forEach(sel=>{const el=$(sel);if(el)el.onclick=e=>{e.preventDefault();$("#fileInput")?.click()}});
 const fileInput=$("#fileInput");
