@@ -1,5 +1,15 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Terms &amp; Conditions | Meme Studio</title>
+<html lang="en">
+<head>
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+
+
+
+
+
 <link rel="icon" type="image/x-icon" href="meme-studio-favicon.ico?v=3">
 <link rel="icon" type="image/png" sizes="16x16" href="meme-studio-favicon-16.png?v=3">
 <link rel="icon" type="image/png" sizes="32x32" href="meme-studio-favicon-32.png?v=3">
@@ -10,7 +20,59 @@
 <link rel="icon" type="image/png" sizes="512x512" href="meme-studio-favicon-512.png?v=3">
 
 
-<link href="legal.css" rel="stylesheet"/>
+
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box}
+html{min-height:100%;}
+body{margin:0;min-height:100vh;font-family:Inter,system-ui,sans-serif;background:linear-gradient(135deg,#f7f7fb,#ecebff);color:#171722;padding:32px 28px;}
+.shell{width:min(1400px,100%);margin:0 auto;}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:22px;margin-bottom:48px;}
+.mark{width:48px;height:48px;border-radius:14px;background:#6d5dfc;color:white;display:grid;place-items:center;box-shadow:0 10px 25px #6d5dfc33;font-size:22px;}
+.hero{text-align:center;margin-bottom:38px;}
+.eyebrow{display:inline-flex;padding:8px 13px;border-radius:999px;background:#fff;border:1px solid #e5e4ee;font-size:13px;font-weight:700;color:#6d5dfc;}
+.hero h1{font-size:clamp(38px,5vw,58px);line-height:1.05;margin:18px 0 12px;letter-spacing:-2px;}
+.hero p{margin:0 auto;color:#666879;max-width:760px;line-height:1.7;font-size:17px;}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;max-width:1185px;margin:0 auto;}
+.choice{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e3e2eb;border-radius:24px;padding:32px;box-shadow:0 18px 50px #23204412;transition:.2s;min-width:0;}
+.choice:hover{transform:translateY(-5px);box-shadow:0 24px 60px #2320441c;border-color:#c8c4ff;}
+.icon{width:78px;height:78px;border-radius:22px;display:grid;place-items:center;font-size:40px;background:#f0efff;margin-bottom:24px;}
+.choice h2{margin:0 0 12px;font-size:27px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.choice p{color:#696a79;line-height:1.6;margin:0 0 24px;font-size:16px;}
+.go{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:#6d5dfc;}
+.badge{font-size:10px;padding:5px 8px;border-radius:999px;background:#f1efff;margin-left:3px;}
+.seo-content{margin:42px auto 0;padding:42px 0 8px;border-top:1px solid #e3e2eb;text-align:left;color:#60606d;max-width:1185px;}
+.seo-content h2{font-size:clamp(24px,4vw,34px);margin:0 0 18px;color:#22212b;letter-spacing:-.025em;}
+.seo-content p{margin:0 0 14px;font-size:13px;line-height:1.8;}
+.seo-content strong{color:#5c4de0;}
+.footer{text-align:center;color:#858594;font-size:12px;margin:28px auto 0;max-width:1185px;}
+.legal-footer-links{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:1185px;margin:18px auto 0;}
+.legal-footer-links a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;background:#2563eb;color:#fff!important;border-radius:10px;text-decoration:none!important;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,.25);transition:background .2s,transform .2s,box-shadow .2s;}
+.legal-footer-links a:hover{background:#1d4ed8;transform:translateY(-1px);box-shadow:0 6px 16px rgba(37,99,235,.32);}
+@media(max-width:900px){.choices{grid-template-columns:1fr;max-width:700px}.legal-footer-links{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:700px){body{padding:24px 18px}.brand{margin-bottom:30px}.hero{margin-bottom:28px}.hero p{font-size:15px}.choice{padding:24px}.seo-content{margin-top:30px;padding-top:30px}.seo-content p{font-size:12px;line-height:1.75;}}
+@media(max-width:480px){body{padding:18px 12px}.brand{font-size:19px;margin-bottom:24px}.mark{width:42px;height:42px;border-radius:12px;font-size:19px}.hero h1{font-size:36px;letter-spacing:-1.5px}.hero p{font-size:13px}.choices{gap:14px}.choice{padding:18px;border-radius:18px}.choice h2{font-size:22px}.choice p{font-size:13px}.icon{width:58px;height:58px;font-size:30px;margin-bottom:16px}.go{font-size:13px}.legal-footer-links{grid-template-columns:1fr;gap:8px}.legal-footer-links a{width:100%;}}
+.dark{background:#111119;color:#f4f4fa}.dark .choice{background:#1a1a24;border-color:#2b2b38}.dark .hero p,.dark .choice p{color:#aaaabd}.dark .eyebrow{background:#1a1a24;border-color:#303040}.dark .icon{background:#27233f}.dark .footer{color:#77778a}.dark .seo-content{border-color:#2a2934;color:#a7a6b5}.dark .seo-content h2{color:#f4f4fa}.dark .seo-content strong{color:#aaa1ff}.dark .badge{background:#2a2744;color:#e9e7ff}.dark .faq-section{border-color:#2a2934}.dark .faq-section h2{color:#f4f4fa}.dark .faq-intro{color:#a7a6b5}.dark .faq-list details{background:#1a1a24;border-color:#2b2b38}.dark .faq-list details[open]{border-color:#4a456e}.dark .faq-list summary{color:#f4f4fa}.dark .faq-list details p{color:#aaaabd}.dark .faq-list summary::after{color:#aaa1ff}.dark .legal-footer-links a{box-shadow:0 4px 12px rgba(0,0,0,.25)}
+</style>
+<style id="faq-seo-style">
+.faq-section{max-width:1185px;margin:44px auto 0;padding:42px 0 8px;border-top:1px solid #e3e2eb;text-align:left;}
+.faq-section h2{font-size:clamp(24px,4vw,34px);margin:0 0 10px;color:#22212b;letter-spacing:-.025em;}
+.faq-intro{margin:0 0 20px;color:#60606d;font-size:14px;line-height:1.75;}
+.faq-list{display:grid;gap:10px;}
+.faq-list details{background:#fff;border:1px solid #e3e2eb;border-radius:14px;padding:0 18px;transition:border-color .2s,box-shadow .2s;}
+.faq-list details[open]{border-color:#c8c4ff;box-shadow:0 8px 24px #23204410;}
+.faq-list summary{cursor:pointer;list-style:none;padding:17px 34px 17px 0;font-weight:700;color:#22212b;position:relative;}
+.faq-list summary::-webkit-details-marker{display:none;}
+.faq-list summary::after{content:'+';position:absolute;right:3px;top:13px;font-size:22px;color:#6d5dfc;font-weight:600;}
+.faq-list details[open] summary::after{content:'−';}
+.faq-list details p{margin:0 0 17px;color:#60606d;font-size:14px;line-height:1.75;}
+@media(max-width:700px){.faq-section{margin-top:30px;padding-top:30px}.faq-list details{padding:0 14px}.faq-list summary{font-size:14px;padding-right:30px}.faq-list details p{font-size:13px;line-height:1.7;}}
+
+</style>
+
+
 <style id="legal-footer-button-style">
 .legal-footer-links{width:100%;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px;margin:28px auto 0;padding:0;}
 .legal-footer-links a{display:inline-flex;align-items:center;justify-content:center;min-width:130px;min-height:44px;padding:10px 18px;background:#2563eb;color:#fff!important;border-radius:10px;text-decoration:none!important;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,.25);transition:background .2s,transform .2s,box-shadow .2s;box-sizing:border-box;}
@@ -28,8 +90,101 @@
 .index-header .brand{margin:0;}
 @media(max-width:760px){.index-header{flex-wrap:wrap;margin-bottom:28px}.index-header .brand{width:auto}.index-header .header-legal-links{width:100%;margin-left:0}}
 </style>
-<meta content="Terms and conditions for using the Meme Studio meme generator and editing tools." name="description"/><meta content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" name="robots"/><link href="https://www.freememeai.com/terms.html" rel="canonical"/><meta content="website" property="og:type"/><meta content="Terms &amp; Conditions | Meme Studio" property="og:title"/><meta content="Terms and conditions for using the Meme Studio meme generator and editing tools." property="og:description"/><meta content="https://www.freememeai.com/terms.html" property="og:url"/><meta content="Meme Studio" property="og:site_name"/><meta content="https://www.freememeai.com/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="image/png" property="og:image:type"/><meta content="en_US" property="og:locale"/><meta content="summary" name="twitter:card"/><meta content="https://www.freememeai.com/og-image.png" name="twitter:image"/><meta content="Terms &amp; Conditions | Meme Studio" name="twitter:title"/><meta content="Terms and conditions for using the Meme Studio meme generator and editing tools." name="twitter:description"/><meta content="#6d5dfc" name="theme-color"/>
+<style id="index-theme-toggle-style">
+.index-theme-toggle{width:42px;height:42px;flex:0 0 42px;border:1px solid #e2e1ea;border-radius:12px;background:#fff;color:#252431;display:inline-grid;place-items:center;font-size:18px;cursor:pointer;box-shadow:0 6px 18px rgba(35,32,68,.10);transition:.18s;line-height:1;}
+.index-theme-toggle:hover{transform:translateY(-1px);border-color:#c8c4ff;box-shadow:0 8px 22px rgba(35,32,68,.14);}
+.dark .index-theme-toggle{background:#1a1a24;color:#f4f4fa;border-color:#303040;box-shadow:0 6px 18px rgba(0,0,0,.25);}
+@media(max-width:760px){.index-theme-toggle{width:40px;height:40px;flex-basis:40px;margin-left:auto;}}
+</style>
+<meta content="#6d5dfc" name="theme-color"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Meme Studio","url":"https://www.freememeai.com/","description":"Create memes online with Meme Studio, a free meme generator for images and GIFs. Make custom memes with templates, captions, stickers and more."}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Meme Studio","applicationCategory":"MultimediaApplication","operatingSystem":"Web Browser","browserRequirements":"Requires JavaScript","description":"Create memes online with Meme Studio, a free meme generator for images and GIFs. Make custom memes with templates, captions, stickers and more.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 <!-- Meme Studio favicon -->
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="manifest" href="site.webmanifest">
-</head><body><button aria-label="Go back" class="site-back-btn" onclick="if(history.length&gt;1){history.back()}else{location.href='index.html'}" type="button">← Back</button><header><a class="brand" href="index.html">Meme<span>Studio</span></a><nav><a href="meme-editor.html">Create</a><a href="gif-editor.html">GIF Editor</a><a href="templates.html">Templates</a></nav><div aria-label="Information pages" class="header-legal-links"><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a><a href="contact.html">Contact Us</a></div><button class="theme" id="theme">☀️</button></header><main><article class="card"><h1>Terms &amp; Conditions</h1><p>By using MemeStudio, you agree to use the website responsibly and comply with applicable laws.</p><h2>Your content</h2><p>You are responsible for the images, GIFs, text, and other content you upload or create. You should have the necessary rights or permission to use content that you upload.</p><h2>Acceptable use</h2><p>Do not use MemeStudio to create or distribute unlawful, abusive, fraudulent, or infringing content. Do not attempt to disrupt the website or misuse its services.</p><h2>Third-party templates</h2><p>Meme templates may be supplied by third-party sources. Availability and ownership of those images may vary. Users are responsible for determining whether a particular image is appropriate for their intended use.</p><h2>Service availability</h2><p>MemeStudio is provided on an as-available basis. Features may change, be updated, or become temporarily unavailable.</p></article></main><footer><div class="legal-footer-links"><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a><a href="contact.html">Contact Us</a></div></footer><script>const b=document.body,t=document.getElementById('theme');if(localStorage.theme==='dark'){b.classList.add('dark');t.textContent='🌙'}t.onclick=()=>{b.classList.toggle('dark');localStorage.theme=b.classList.contains('dark')?'dark':'light';t.textContent=b.classList.contains('dark')?'🌙':'☀️'};</script><script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}</script></body></html>
+    <title>Terms of Service | FreeMemeAI</title>
+    <meta name="description" content="Read the FreeMemeAI Terms of Service covering use of our meme and GIF tools, user content, templates, third-party services, intellectual property, prohibited uses, and service availability.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.freememeai.com/terms.html">
+    <meta property="og:title" content="Terms of Service | FreeMemeAI">
+    <meta property="og:description" content="Terms governing your use of FreeMemeAI's meme and GIF creation tools, templates, user content, and related services.">
+    <meta property="og:url" content="https://www.freememeai.com/terms.html">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Terms of Service | FreeMemeAI">
+    <meta name="twitter:description" content="Terms governing your use of FreeMemeAI's meme and GIF creation tools, templates, user content, and related services.">
+
+</head>
+<body>
+<header class="index-header"><div class="brand"><span class="mark">M</span><span>Meme<span style="color:#6d5dfc">Studio</span></span></div><button aria-label="Toggle light and dark mode" class="index-theme-toggle" id="indexThemeToggle" title="Toggle theme" type="button">☀️</button><div aria-label="Information pages" class="header-legal-links"><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a><a href="contact.html">Contact Us</a></div></header>
+<div style="max-width:900px;margin:18px auto 0;padding:0 20px;"><button type="button" onclick="history.back()" aria-label="Go back" style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border:1px solid currentColor;border-radius:10px;background:transparent;cursor:pointer;font:inherit;">← Back</button></div>
+
+
+<main class="legal-page" style="max-width:900px;margin:0 auto;padding:40px 20px;line-height:1.7;">
+  <h1>Terms of Service</h1>
+  <p><strong>Last updated: August 29, 2026</strong></p>
+
+  <p>These Terms of Service ("Terms") govern your use of FreeMemeAI ("FreeMemeAI", "we", "us", or "our"). By accessing or using the website and its meme, GIF, template, and related tools, you agree to these Terms. If you do not agree, please do not use the service.</p>
+
+  <h2>1. Use of the Service</h2>
+  <p>FreeMemeAI provides online tools that allow users to create, edit, customize, and download memes and GIF memes. Features may change, be added, suspended, or discontinued at any time.</p>
+  <p>You are responsible for using the service in compliance with these Terms and all applicable laws and regulations.</p>
+
+  <h2>2. User-Uploaded Content</h2>
+  <p>You may upload images, GIFs, or other material to use with the editors. You are responsible for the content you upload, edit, generate, or download.</p>
+  <p>You represent that you have the necessary rights, permissions, or lawful basis to use any content you upload. Do not upload content that you are not permitted to reproduce, modify, or distribute.</p>
+  <p>Do not upload passwords, financial information, government identification, private communications, or other sensitive personal information.</p>
+
+  <h2>3. Prohibited Content and Conduct</h2>
+  <p>You may not use FreeMemeAI to create, upload, distribute, or promote content that violates applicable law or infringes another person's rights. You must not attempt to interfere with, disrupt, reverse engineer, abuse, scrape, or gain unauthorized access to the service or its infrastructure.</p>
+  <p>You must not use the service for fraud, phishing, malware distribution, harassment, impersonation, or other unlawful or abusive activity.</p>
+
+  <h2>4. Templates and Third-Party Content</h2>
+  <p>FreeMemeAI may display templates, images, GIFs, links, or other content originating from third parties. Third-party content may be subject to separate copyright, trademark, license, or usage restrictions.</p>
+  <p>FreeMemeAI does not grant you ownership of third-party material merely because it is available through the website. You are responsible for determining whether your intended use of third-party content is permitted.</p>
+
+  <h2>5. Intellectual Property</h2>
+  <p>The FreeMemeAI website, branding, software, original text, design, and other original materials are protected by applicable intellectual-property laws. Except as permitted by law or expressly allowed by us, you may not copy, modify, distribute, sell, or exploit our original website materials.</p>
+  <p>Nothing in these Terms transfers ownership of your lawful user-created content to FreeMemeAI.</p>
+
+  <h2>6. Copyright Complaints</h2>
+  <p>If you believe material available through FreeMemeAI infringes your copyright, please contact us through our <a href="contact.html">Contact page</a> with sufficient information to identify the material and explain your rights and the alleged infringement.</p>
+  <p>We may review legitimate copyright complaints and take appropriate action, which may include removing or disabling access to content where appropriate.</p>
+
+  <h2>7. Generated and Downloaded Content</h2>
+  <p>FreeMemeAI provides tools for creating and editing content. We do not guarantee that content generated or downloaded through the service is suitable for a particular purpose, legally cleared for a particular use, or free from third-party rights.</p>
+  <p>You are responsible for reviewing content before publishing, distributing, or using it commercially.</p>
+
+  <h2>8. Third-Party Services</h2>
+  <p>Some features may depend on third-party services for hosting, databases, forms, advertising, analytics, content delivery, security, or other functions. Third-party services may have their own terms and privacy policies.</p>
+  <p>FreeMemeAI is not responsible for independent changes, outages, or policies of third-party services.</p>
+
+  <h2>9. Advertising</h2>
+  <p>FreeMemeAI may display advertisements from third-party advertising providers, including Google AdSense. Advertisements may be selected or measured using information and technologies described in our <a href="privacy.html">Privacy Policy</a>.</p>
+
+  <h2>10. Availability and Changes</h2>
+  <p>We aim to keep FreeMemeAI available and useful, but we do not guarantee uninterrupted, error-free, or permanent availability. We may modify, suspend, or discontinue any feature or part of the service at any time.</p>
+
+  <h2>11. Disclaimer</h2>
+  <p>To the extent permitted by applicable law, FreeMemeAI is provided on an "as is" and "as available" basis without warranties of any kind, whether express or implied. We do not guarantee the accuracy, reliability, availability, suitability, or completeness of the service or third-party content.</p>
+
+  <h2>12. Limitation of Liability</h2>
+  <p>To the extent permitted by applicable law, FreeMemeAI and its operators will not be liable for indirect, incidental, special, consequential, or punitive damages, or for loss of data, profits, revenue, or business arising from or related to use of the service.</p>
+
+  <h2>13. Indemnification</h2>
+  <p>To the extent permitted by applicable law, you agree to be responsible for claims or losses arising from your unlawful use of the service, your violation of these Terms, or your infringement of another person's rights through content you upload or distribute.</p>
+
+  <h2>14. Termination or Restriction</h2>
+  <p>We may restrict or terminate access to the service where reasonably necessary to protect the service, users, third parties, or our legal rights, including in response to abuse, security issues, or violations of these Terms.</p>
+
+  <h2>15. Privacy</h2>
+  <p>Your use of FreeMemeAI is also governed by our <a href="privacy.html">Privacy Policy</a>, which explains how information may be handled by the website and relevant third-party services.</p>
+
+  <h2>16. Changes to These Terms</h2>
+  <p>We may update these Terms from time to time. When we make changes, we will update the "Last updated" date on this page. Your continued use of the service after an update means you accept the revised Terms to the extent permitted by law.</p>
+
+  <h2>17. Contact</h2>
+  <p>If you have questions about these Terms, please use our <a href="contact.html">Contact page</a>.</p>
+</main>
+
+<footer><div class="legal-footer-links"><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a><a href="contact.html">Contact Us</a></div></footer>
+</body>
+</html>

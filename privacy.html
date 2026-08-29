@@ -1,7 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+
+
+
+
+
 <link rel="icon" type="image/x-icon" href="meme-studio-favicon.ico?v=3">
 <link rel="icon" type="image/png" sizes="16x16" href="meme-studio-favicon-16.png?v=3">
 <link rel="icon" type="image/png" sizes="32x32" href="meme-studio-favicon-32.png?v=3">
@@ -12,7 +20,59 @@
 <link rel="icon" type="image/png" sizes="512x512" href="meme-studio-favicon-512.png?v=3">
 
 
-<link href="legal.css" rel="stylesheet"/>
+
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box}
+html{min-height:100%;}
+body{margin:0;min-height:100vh;font-family:Inter,system-ui,sans-serif;background:linear-gradient(135deg,#f7f7fb,#ecebff);color:#171722;padding:32px 28px;}
+.shell{width:min(1400px,100%);margin:0 auto;}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:22px;margin-bottom:48px;}
+.mark{width:48px;height:48px;border-radius:14px;background:#6d5dfc;color:white;display:grid;place-items:center;box-shadow:0 10px 25px #6d5dfc33;font-size:22px;}
+.hero{text-align:center;margin-bottom:38px;}
+.eyebrow{display:inline-flex;padding:8px 13px;border-radius:999px;background:#fff;border:1px solid #e5e4ee;font-size:13px;font-weight:700;color:#6d5dfc;}
+.hero h1{font-size:clamp(38px,5vw,58px);line-height:1.05;margin:18px 0 12px;letter-spacing:-2px;}
+.hero p{margin:0 auto;color:#666879;max-width:760px;line-height:1.7;font-size:17px;}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;max-width:1185px;margin:0 auto;}
+.choice{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e3e2eb;border-radius:24px;padding:32px;box-shadow:0 18px 50px #23204412;transition:.2s;min-width:0;}
+.choice:hover{transform:translateY(-5px);box-shadow:0 24px 60px #2320441c;border-color:#c8c4ff;}
+.icon{width:78px;height:78px;border-radius:22px;display:grid;place-items:center;font-size:40px;background:#f0efff;margin-bottom:24px;}
+.choice h2{margin:0 0 12px;font-size:27px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.choice p{color:#696a79;line-height:1.6;margin:0 0 24px;font-size:16px;}
+.go{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:#6d5dfc;}
+.badge{font-size:10px;padding:5px 8px;border-radius:999px;background:#f1efff;margin-left:3px;}
+.seo-content{margin:42px auto 0;padding:42px 0 8px;border-top:1px solid #e3e2eb;text-align:left;color:#60606d;max-width:1185px;}
+.seo-content h2{font-size:clamp(24px,4vw,34px);margin:0 0 18px;color:#22212b;letter-spacing:-.025em;}
+.seo-content p{margin:0 0 14px;font-size:13px;line-height:1.8;}
+.seo-content strong{color:#5c4de0;}
+.footer{text-align:center;color:#858594;font-size:12px;margin:28px auto 0;max-width:1185px;}
+.legal-footer-links{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:1185px;margin:18px auto 0;}
+.legal-footer-links a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;background:#2563eb;color:#fff!important;border-radius:10px;text-decoration:none!important;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,.25);transition:background .2s,transform .2s,box-shadow .2s;}
+.legal-footer-links a:hover{background:#1d4ed8;transform:translateY(-1px);box-shadow:0 6px 16px rgba(37,99,235,.32);}
+@media(max-width:900px){.choices{grid-template-columns:1fr;max-width:700px}.legal-footer-links{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:700px){body{padding:24px 18px}.brand{margin-bottom:30px}.hero{margin-bottom:28px}.hero p{font-size:15px}.choice{padding:24px}.seo-content{margin-top:30px;padding-top:30px}.seo-content p{font-size:12px;line-height:1.75;}}
+@media(max-width:480px){body{padding:18px 12px}.brand{font-size:19px;margin-bottom:24px}.mark{width:42px;height:42px;border-radius:12px;font-size:19px}.hero h1{font-size:36px;letter-spacing:-1.5px}.hero p{font-size:13px}.choices{gap:14px}.choice{padding:18px;border-radius:18px}.choice h2{font-size:22px}.choice p{font-size:13px}.icon{width:58px;height:58px;font-size:30px;margin-bottom:16px}.go{font-size:13px}.legal-footer-links{grid-template-columns:1fr;gap:8px}.legal-footer-links a{width:100%;}}
+.dark{background:#111119;color:#f4f4fa}.dark .choice{background:#1a1a24;border-color:#2b2b38}.dark .hero p,.dark .choice p{color:#aaaabd}.dark .eyebrow{background:#1a1a24;border-color:#303040}.dark .icon{background:#27233f}.dark .footer{color:#77778a}.dark .seo-content{border-color:#2a2934;color:#a7a6b5}.dark .seo-content h2{color:#f4f4fa}.dark .seo-content strong{color:#aaa1ff}.dark .badge{background:#2a2744;color:#e9e7ff}.dark .faq-section{border-color:#2a2934}.dark .faq-section h2{color:#f4f4fa}.dark .faq-intro{color:#a7a6b5}.dark .faq-list details{background:#1a1a24;border-color:#2b2b38}.dark .faq-list details[open]{border-color:#4a456e}.dark .faq-list summary{color:#f4f4fa}.dark .faq-list details p{color:#aaaabd}.dark .faq-list summary::after{color:#aaa1ff}.dark .legal-footer-links a{box-shadow:0 4px 12px rgba(0,0,0,.25)}
+</style>
+<style id="faq-seo-style">
+.faq-section{max-width:1185px;margin:44px auto 0;padding:42px 0 8px;border-top:1px solid #e3e2eb;text-align:left;}
+.faq-section h2{font-size:clamp(24px,4vw,34px);margin:0 0 10px;color:#22212b;letter-spacing:-.025em;}
+.faq-intro{margin:0 0 20px;color:#60606d;font-size:14px;line-height:1.75;}
+.faq-list{display:grid;gap:10px;}
+.faq-list details{background:#fff;border:1px solid #e3e2eb;border-radius:14px;padding:0 18px;transition:border-color .2s,box-shadow .2s;}
+.faq-list details[open]{border-color:#c8c4ff;box-shadow:0 8px 24px #23204410;}
+.faq-list summary{cursor:pointer;list-style:none;padding:17px 34px 17px 0;font-weight:700;color:#22212b;position:relative;}
+.faq-list summary::-webkit-details-marker{display:none;}
+.faq-list summary::after{content:'+';position:absolute;right:3px;top:13px;font-size:22px;color:#6d5dfc;font-weight:600;}
+.faq-list details[open] summary::after{content:'−';}
+.faq-list details p{margin:0 0 17px;color:#60606d;font-size:14px;line-height:1.75;}
+@media(max-width:700px){.faq-section{margin-top:30px;padding-top:30px}.faq-list details{padding:0 14px}.faq-list summary{font-size:14px;padding-right:30px}.faq-list details p{font-size:13px;line-height:1.7;}}
+
+</style>
+
+
 <style id="legal-footer-button-style">
 .legal-footer-links{width:100%;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px;margin:28px auto 0;padding:0;}
 .legal-footer-links a{display:inline-flex;align-items:center;justify-content:center;min-width:130px;min-height:44px;padding:10px 18px;background:#2563eb;color:#fff!important;border-radius:10px;text-decoration:none!important;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,.25);transition:background .2s,transform .2s,box-shadow .2s;box-sizing:border-box;}
@@ -30,11 +90,16 @@
 .index-header .brand{margin:0;}
 @media(max-width:760px){.index-header{flex-wrap:wrap;margin-bottom:28px}.index-header .brand{width:auto}.index-header .header-legal-links{width:100%;margin-left:0}}
 </style>
-<meta content="#6d5dfc" name="theme-color"/>
+<style id="index-theme-toggle-style">
+.index-theme-toggle{width:42px;height:42px;flex:0 0 42px;border:1px solid #e2e1ea;border-radius:12px;background:#fff;color:#252431;display:inline-grid;place-items:center;font-size:18px;cursor:pointer;box-shadow:0 6px 18px rgba(35,32,68,.10);transition:.18s;line-height:1;}
+.index-theme-toggle:hover{transform:translateY(-1px);border-color:#c8c4ff;box-shadow:0 8px 22px rgba(35,32,68,.14);}
+.dark .index-theme-toggle{background:#1a1a24;color:#f4f4fa;border-color:#303040;box-shadow:0 6px 18px rgba(0,0,0,.25);}
+@media(max-width:760px){.index-theme-toggle{width:40px;height:40px;flex-basis:40px;margin-left:auto;}}
+</style>
+<meta content="#6d5dfc" name="theme-color"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Meme Studio","url":"https://www.freememeai.com/","description":"Create memes online with Meme Studio, a free meme generator for images and GIFs. Make custom memes with templates, captions, stickers and more."}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Meme Studio","applicationCategory":"MultimediaApplication","operatingSystem":"Web Browser","browserRequirements":"Requires JavaScript","description":"Create memes online with Meme Studio, a free meme generator for images and GIFs. Make custom memes with templates, captions, stickers and more.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 <!-- Meme Studio favicon -->
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="manifest" href="site.webmanifest">
-
     <title>Privacy Policy | FreeMemeAI</title>
     <meta name="description" content="Read the FreeMemeAI Privacy Policy to learn how we handle uploaded images and GIFs, contact information, cookies, local storage, advertising, and third-party services.">
     <meta name="robots" content="index, follow">
@@ -49,7 +114,8 @@
 
 </head>
 <body>
-<header><a class="brand" href="index.html">Meme<span>Studio</span></a><nav><a href="meme-editor.html">Create</a><a href="gif-editor.html">GIF Editor</a><a href="templates.html">Templates</a></nav><div aria-label="Information pages" class="header-legal-links"><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a><a href="contact.html">Contact Us</a></div><button class="theme" id="theme">☀️</button></header>
+<header class="index-header"><div class="brand"><span class="mark">M</span><span>Meme<span style="color:#6d5dfc">Studio</span></span></div><button aria-label="Toggle light and dark mode" class="index-theme-toggle" id="indexThemeToggle" title="Toggle theme" type="button">☀️</button><div aria-label="Information pages" class="header-legal-links"><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a><a href="contact.html">Contact Us</a></div></header>
+<div style="max-width:900px;margin:18px auto 0;padding:0 20px;"><button type="button" onclick="history.back()" aria-label="Go back" style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border:1px solid currentColor;border-radius:10px;background:transparent;cursor:pointer;font:inherit;">← Back</button></div>
 
 <main class="legal-page" style="max-width:900px;margin:0 auto;padding:40px 20px;line-height:1.7;">
   <h1>Privacy Policy</h1>
@@ -119,7 +185,6 @@
   <h2>14. Contact Us</h2>
   <p>If you have questions or concerns about this Privacy Policy or FreeMemeAI's privacy practices, please use our <a href="contact.html">Contact page</a>.</p>
 </main>
-
-
+<footer><div class="legal-footer-links"><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a><a href="contact.html">Contact Us</a></div></footer>
 </body>
 </html>
