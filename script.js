@@ -503,8 +503,12 @@ $("#customStickerInput").onchange=e=>{
 };
 
 function getStickerBounds(s){
- const half=(s.size*.72)/canvas.width;
- return {left:s.x-half,right:s.x+half,top:s.y-half,bottom:s.y+half,half};
+ // Sticker size is stored in canvas pixels, while x/y are normalized.
+ // Use separate X/Y half extents so selection handles stay aligned on
+ // non-square canvases.
+ const halfX=(s.size*.72)/canvas.width;
+ const halfY=(s.size*.72)/canvas.height;
+ return {left:s.x-halfX,right:s.x+halfX,top:s.y-halfY,bottom:s.y+halfY,halfX,halfY};
 }
 function hitTestSticker(x,y){
  for(let i=stickers.length-1;i>=0;i--){
@@ -516,12 +520,12 @@ function hitTestSticker(x,y){
 function stickerResizeHandleHit(x,y,index){
  if(index<0||!stickers[index])return false;
  const b=getStickerBounds(stickers[index]);
- return Math.hypot(x-b.right,y-b.bottom)<=18/canvas.width;
+ return Math.hypot((x-b.right)*canvas.width,(y-b.bottom)*canvas.height)<=18;
 }
 function stickerDeleteHandleHit(x,y,index){
  if(index<0||!stickers[index])return false;
  const b=getStickerBounds(stickers[index]);
- return Math.hypot(x-b.right,y-b.top)<=18/canvas.width;
+ return Math.hypot((x-b.right)*canvas.width,(y-b.top)*canvas.height)<=18;
 }
 
 function getTextBounds(t){
@@ -637,6 +641,8 @@ function setTool(tool){
     $("#statusText").textContent="Draw mode — draw directly on the meme";
   } else if(tool==="text"){
     $("#statusText").textContent="Text tool selected";
+  } else if(tool==="select"){
+    $("#statusText").textContent="Cursor mode — select and move objects";
   } else if(tool==="sticker"){
     $("#statusText").textContent="Sticker tool selected";
   }
@@ -657,6 +663,12 @@ $$(".tool-btn").forEach(b=>{
     e.stopPropagation();
 
     const tool=b.dataset.tool;
+
+    // Draw is a toggle: click it again to return to normal cursor/selection mode.
+    if(tool==="draw" && activeTool==="draw") {
+      setTool("select");
+      return;
+    }
 
     // Bottom Text button is the shortcut for the existing
     // “＋ Add another text” action in the Text editor.
@@ -799,7 +811,7 @@ canvas.addEventListener("pointerdown",e=>{
   if(sticker>=0){
     selectedSticker=sticker;selectedImage=-1;selectedText=-1;
     const st=stickers[sticker];
-    dragging={type:"sticker",index:sticker,offsetX:p.x-st.x,offsetY:p.y};
+    dragging={type:"sticker",index:sticker,offsetX:p.x-st.x,offsetY:p.y-st.y};
     draw();e.preventDefault();return;
   }
 

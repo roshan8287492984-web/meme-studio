@@ -210,9 +210,15 @@ function updateGifUI(){
   const btn=$("#downloadGifBtn"); if(btn) btn.disabled=!gifMode||!gifFrames.length;
 }
 function fitGifCanvas(w,h){
-  const max=900; let cw=max,ch=max;
-  if(ratio>1){cw=max;ch=max/ratio}else{ch=max;cw=max*ratio}
-  canvas.width=Math.round(cw);canvas.height=Math.round(ch);
+  // GIFs should keep their real aspect ratio. The old implementation used
+  // the global meme ratio (1:1 by default), which forced GIFs into a large
+  // 900x900 export and made gif.js encoding unnecessarily slow.
+  const iw=Math.max(1,Number(w)||1), ih=Math.max(1,Number(h)||1);
+  ratio=iw/ih;
+  const max=900;
+  let cw=max, ch=Math.round(max/ratio);
+  if(ch>max){ch=max;cw=Math.round(max*ratio);}
+  canvas.width=Math.max(1,cw);canvas.height=Math.max(1,ch);
 }
 function drawBackgroundImage(targetCtx,targetCanvas){
   if(!bgImage||!bgImage.complete||!bgImage.naturalWidth)return;
@@ -312,19 +318,32 @@ async function loadGifFile(file){
 }
 function drawGifFrameBase(targetCtx,targetCanvas,frameIndex){
   const frame=gifFrames[frameIndex%gifFrames.length];
-  const fc=document.createElement("canvas");
-  fc.width=frame.dims.width;fc.height=frame.dims.height;
-  const fctx=fc.getContext("2d");
-  if(frame.image){
-    fctx.drawImage(frame.image,0,0,fc.width,fc.height);
-  }else{
-    const patch=new ImageData(new Uint8ClampedArray(frame.patch),frame.dims.width,frame.dims.height);
-    fctx.putImageData(patch,frame.dims.left||0,frame.dims.top||0);
-  }
-  targetCtx.clearRect(0,0,targetCanvas.width,targetCanvas.height);targetCtx.fillStyle=bg;targetCtx.fillRect(0,0,targetCanvas.width,targetCanvas.height);
+  targetCtx.clearRect(0,0,targetCanvas.width,targetCanvas.height);
+  targetCtx.fillStyle=bg;
+  targetCtx.fillRect(0,0,targetCanvas.width,targetCanvas.height);
   drawBackgroundImage(targetCtx,targetCanvas);
-  const scale=Math.min(targetCanvas.width/fc.width,targetCanvas.height/fc.height);const w=fc.width*scale,h=fc.height*scale;
-  targetCtx.drawImage(fc,(targetCanvas.width-w)/2,(targetCanvas.height-h)/2,w,h);
+
+  const fw=frame.dims.width, fh=frame.dims.height;
+  const scale=Math.min(targetCanvas.width/fw,targetCanvas.height/fh);
+  const w=fw*scale, h=fh*scale;
+  const x=(targetCanvas.width-w)/2, y=(targetCanvas.height-h)/2;
+
+  if(frame.image){
+    targetCtx.drawImage(frame.image,x,y,w,h);
+  }else{
+    // gifuct-js fallback frames are patches, so draw the patch at its
+    // original GIF coordinates. Native ImageDecoder frames are full frames.
+    const patchCanvas=document.createElement("canvas");
+    patchCanvas.width=fw; patchCanvas.height=fh;
+    const patchCtx=patchCanvas.getContext("2d");
+    const patch=new ImageData(
+      new Uint8ClampedArray(frame.patch),
+      frame.dims.width,
+      frame.dims.height
+    );
+    patchCtx.putImageData(patch,frame.dims.left||0,frame.dims.top||0);
+    targetCtx.drawImage(patchCanvas,x,y,w,h);
+  }
 }
 function getDownloadBaseName(){
   const input=$("#downloadFilename");
@@ -334,6 +353,30 @@ function getDownloadBaseName(){
   if(input)input.value=name;
   return name;
 }
+let gifWorkerUrlPromise=null;
+async function getGifWorkerUrl(){
+  if(gifWorkerUrlPromise)return gifWorkerUrlPromise;
+  gifWorkerUrlPromise=(async()=>{
+    const workerSources=[
+      "https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js",
+      "https://unpkg.com/gif.js@0.2.0/dist/gif.worker.js"
+    ];
+    let lastError=null;
+    for(const workerSource of workerSources){
+      try{
+        const response=await fetch(workerSource,{mode:"cors",cache:"force-cache"});
+        if(!response.ok)throw new Error(`Worker HTTP ${response.status}`);
+        const workerCode=await response.text();
+        if(!workerCode||workerCode.length<1000)throw new Error("Worker file was empty or incomplete");
+        return URL.createObjectURL(new Blob([workerCode],{type:"application/javascript"}));
+      }catch(err){lastError=err;}
+    }
+    gifWorkerUrlPromise=null;
+    throw new Error("Could not load the GIF encoder worker. "+(lastError?.message||"Unknown error"));
+  })();
+  return gifWorkerUrlPromise;
+}
+
 async function downloadGif(){
   if(!gifMode||!gifFrames.length){
     alert("Please upload a GIF before downloading.");
@@ -343,73 +386,214 @@ async function downloadGif(){
     alert("GIF export could not start because the GIF encoder library was not loaded. Please check your internet connection and reload the page.");
     return;
   }
+
   const button=$("#downloadGifBtn");
-  if(button){button.disabled=true;button.innerHTML="Rendering GIF…";}
-  let workerUrl = null;
-  try {
+  if(button){
+    button.disabled=true;
+    button.setAttribute("aria-busy","true");
+    button.innerHTML="Preparing GIF…";
+  }
+
+  let workerUrl=null;
+  let encoder=null;
+  try{
     const out=document.createElement("canvas");
-    out.width=canvas.width; out.height=canvas.height;
-    const octx=out.getContext("2d");
-    // gif.js needs its worker file. Loading the worker through a Blob URL is
-    // more reliable than asking gif.js to create a cross-origin worker directly.
-    const workerSources = [
-      "https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js",
-      "https://unpkg.com/gif.js@0.2.0/dist/gif.worker.js"
-    ];
-    let workerError = null;
-    for (const workerSource of workerSources) {
-      try {
-        const response = await fetch(workerSource, {mode:"cors", cache:"no-store"});
-        if (!response.ok) throw new Error(`Worker HTTP ${response.status}`);
-        const workerCode = await response.text();
-        if (!workerCode || workerCode.length < 1000) throw new Error("Worker file was empty or incomplete");
-        workerUrl = URL.createObjectURL(new Blob([workerCode], {type:"application/javascript"}));
-        break;
-      } catch (e) {
-        workerError = e;
-      }
-    }
-    if (!workerUrl) {
-      throw new Error("Could not load the GIF encoder worker. " + (workerError?.message || "Unknown worker error"));
-    }
-    const encoder=new GIF({workers:2,quality:10,width:out.width,height:out.height,workerScript:workerUrl,transparent:null});
+    out.width=canvas.width;
+    out.height=canvas.height;
+    const octx=out.getContext("2d",{willReadFrequently:true});
+
+    workerUrl=await getGifWorkerUrl();
+
+    // One worker is more reliable for large frames and avoids the browser
+    // freezing while two workers compete for large pixel buffers.
+    encoder=new GIF({
+      workers:1,
+      quality:8,
+      width:out.width,
+      height:out.height,
+      workerScript:workerUrl,
+      transparent:null,
+      repeat:0
+    });
+
     for(let i=0;i<gifFrames.length;i++){
       drawGifFrameBase(octx,out,i);
       drawOverlays(octx,out,false);
       encoder.addFrame(octx,{copy:true,delay:Math.max(40,gifFrames[i].delay||100)});
-      if(button)button.innerHTML=`Rendering GIF… ${Math.round((i+1)/gifFrames.length*100)}%`;
-      await new Promise(r=>setTimeout(r,0));
+      if(button)button.innerHTML=`Preparing GIF… ${Math.round((i+1)/gifFrames.length*100)}%`;
+      await new Promise(resolve=>requestAnimationFrame(resolve));
     }
+
+    if(button)button.innerHTML="Encoding GIF… 0%";
+
     await new Promise((resolve,reject)=>{
       let settled=false;
-      const finish=fn=>value=>{if(settled)return;settled=true;fn(value);};
+      const finish=(fn)=>value=>{
+        if(settled)return;
+        settled=true;
+        fn(value);
+      };
+
+      encoder.on("progress",finishProgress=>{
+        if(button&&typeof finishProgress==="number"){
+          button.innerHTML=`Encoding GIF… ${Math.round(finishProgress*100)}%`;
+        }
+      });
+
       encoder.on("finished",finish(blob=>{
-        try {
+        try{
           const url=URL.createObjectURL(blob);
           const a=document.createElement("a");
-          a.href=url; a.download=getDownloadBaseName()+".gif"; a.style.display="none";
-          document.body.appendChild(a); a.click(); a.remove();
+          a.href=url;
+          a.download=getDownloadBaseName()+".gif";
+          a.style.display="none";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
           setTimeout(()=>URL.revokeObjectURL(url),3000);
           resolve();
-        } catch(e){reject(e);}
+        }catch(err){reject(err);}
       }));
-      encoder.on("abort",finish(()=>reject(new Error("GIF rendering was aborted"))));
-      try { encoder.render(); } catch(e){ reject(e); }
+
+      encoder.on("abort",finish(()=>{
+        reject(new Error("GIF rendering was aborted"));
+      }));
+
+      encoder.on("error",finish(err=>{
+        reject(err instanceof Error?err:new Error(String(err||"GIF worker error")));
+      }));
+
+      try{
+        encoder.render();
+      }catch(err){reject(err);}
     });
-  } catch(err) {
+  }catch(err){
     console.error("GIF download failed:",err);
-    alert("GIF download failed: " + (err?.message || "Unknown error") + "\n\nPlease reload the page and try again.");
-  } finally {
-    if (typeof workerUrl === "string") URL.revokeObjectURL(workerUrl);
-    if(button){button.disabled=false;button.innerHTML="Download GIF <span>↓</span>";}
+    alert("GIF download failed: "+(err?.message||"Unknown error")+"\\n\\nPlease check your connection and try again.");
+  }finally{
+    if(button){
+      button.disabled=false;
+      button.removeAttribute("aria-busy");
+      button.innerHTML="Download GIF <span>↓</span>";
+    }
   }
 }
+
 function drawOverlays(targetCtx,targetCanvas,includeSelection=true){
-  const oldCtx=ctx; // overlay renderer is independent of the visible canvas context
-  drawPaths.forEach(path=>{if(!path.points||path.points.length<2)return;targetCtx.save();targetCtx.strokeStyle=path.color||"#ff3b30";targetCtx.lineWidth=path.width||8;targetCtx.lineCap="round";targetCtx.lineJoin="round";targetCtx.globalAlpha=path.opacity??1;targetCtx.beginPath();path.points.forEach((p,i)=>i?targetCtx.lineTo(p.x*targetCanvas.width,p.y*targetCanvas.height):targetCtx.moveTo(p.x*targetCanvas.width,p.y*targetCanvas.height));targetCtx.stroke();targetCtx.restore();});
-  canvasImages.forEach(im=>{if(im.image)targetCtx.drawImage(im.image,(im.x-im.w/2)*targetCanvas.width,(im.y-im.h/2)*targetCanvas.height,im.w*targetCanvas.width,im.h*targetCanvas.height);});
-  stickers.forEach(st=>{targetCtx.save();targetCtx.textAlign="center";targetCtx.textBaseline="middle";if(st.custom&&st.image){targetCtx.drawImage(st.image,st.x*targetCanvas.width-st.size/2,st.y*targetCanvas.height-st.size/2,st.size,st.size);}else{targetCtx.font=`${st.size}px Arial`;targetCtx.fillText(st.char,st.x*targetCanvas.width,st.y*targetCanvas.height);}targetCtx.restore();});
-  texts.forEach(t=>{const value=t.uppercase===false?t.text:t.text.toUpperCase();const size=t.size;targetCtx.save();targetCtx.globalAlpha=1;targetCtx.textAlign="center";targetCtx.textBaseline="middle";targetCtx.font=`${t.bold?"800":"600"} ${size}px "${t.font||"Impact"}", Impact, sans-serif`;if(t.shadow==="soft"){targetCtx.shadowColor="rgba(0,0,0,.48)";targetCtx.shadowBlur=8;targetCtx.shadowOffsetY=3}else if(t.shadow==="hard"){targetCtx.shadowColor="#000";targetCtx.shadowBlur=0;targetCtx.shadowOffsetX=3;targetCtx.shadowOffsetY=3}else{targetCtx.shadowColor="transparent";targetCtx.shadowBlur=0}targetCtx.lineJoin="round";targetCtx.strokeStyle="#000";targetCtx.lineWidth=t.outline||8;targetCtx.fillStyle=t.color||"#fff";targetCtx.strokeText(value,t.x*targetCanvas.width,t.y*targetCanvas.height);targetCtx.fillText(value,t.x*targetCanvas.width,t.y*targetCanvas.height);targetCtx.restore();});
+  drawPaths.forEach(path=>{
+    if(!path.points||path.points.length<2)return;
+    targetCtx.save();
+    targetCtx.strokeStyle=path.color||"#ff3b30";
+    targetCtx.lineWidth=path.width||8;
+    targetCtx.lineCap="round";
+    targetCtx.lineJoin="round";
+    targetCtx.globalAlpha=path.opacity??1;
+    targetCtx.beginPath();
+    path.points.forEach((p,i)=>i
+      ?targetCtx.lineTo(p.x*targetCanvas.width,p.y*targetCanvas.height)
+      :targetCtx.moveTo(p.x*targetCanvas.width,p.y*targetCanvas.height));
+    targetCtx.stroke();
+    targetCtx.restore();
+  });
+
+  canvasImages.forEach(im=>{
+    if(im.image)targetCtx.drawImage(
+      im.image,
+      (im.x-im.w/2)*targetCanvas.width,
+      (im.y-im.h/2)*targetCanvas.height,
+      im.w*targetCanvas.width,
+      im.h*targetCanvas.height
+    );
+  });
+
+  stickers.forEach(st=>{
+    targetCtx.save();
+    targetCtx.textAlign="center";
+    targetCtx.textBaseline="middle";
+    if(st.custom&&st.image){
+      targetCtx.drawImage(
+        st.image,
+        st.x*targetCanvas.width-st.size/2,
+        st.y*targetCanvas.height-st.size/2,
+        st.size,st.size
+      );
+    }else{
+      targetCtx.font=`${st.size}px Arial`;
+      targetCtx.fillText(st.char,st.x*targetCanvas.width,st.y*targetCanvas.height);
+    }
+    targetCtx.restore();
+  });
+
+  // Render text using the same wrapping/autofit rules as the live editor.
+  // This is important: the previous exporter drew the raw string only, so
+  // the exported GIF could differ from what the user saw on the canvas.
+  texts.forEach(t=>{
+    const value=t.uppercase===false?t.text:t.text.toUpperCase();
+    let size=t.size||58;
+    const maxWidth=targetCanvas.width*.82;
+    const fontFamily=t.font||"Impact";
+    const fontWeight=t.bold?"800":"600";
+    targetCtx.save();
+    if($("#autofit")?.checked){
+      size=Math.min(size,targetCanvas.width/Math.max(4,value.length*.55));
+    }
+    targetCtx.font=`${fontWeight} ${size}px "${fontFamily}", Impact, sans-serif`;
+    const words=value.split(/\s+/).filter(Boolean);
+    const wrapped=[];
+    let line="";
+    for(const word of (words.length?words:[""])){
+      const test=line?line+" "+word:word;
+      if(targetCtx.measureText(test).width<=maxWidth||!line)line=test;
+      else{wrapped.push(line);line=word;}
+    }
+    if(line)wrapped.push(line);
+    const finalLines=[];
+    wrapped.forEach(item=>{
+      if(targetCtx.measureText(item).width<=maxWidth){finalLines.push(item);return;}
+      let part="";
+      for(const ch of item){
+        const test=part+ch;
+        if(targetCtx.measureText(test).width<=maxWidth||!part)part=test;
+        else{finalLines.push(part);part=ch;}
+      }
+      if(part)finalLines.push(part);
+    });
+    const lines=finalLines.length?finalLines:[""];
+    const lineHeight=size*1.08;
+    const centerX=t.x*targetCanvas.width;
+    const centerY=t.y*targetCanvas.height;
+    const totalHeight=lines.length*lineHeight;
+
+    targetCtx.globalAlpha=($("#opacityRange")?.value||100)/100;
+    targetCtx.textAlign="center";
+    targetCtx.textBaseline="middle";
+    if(t.shadow==="soft"){
+      targetCtx.shadowColor="rgba(0,0,0,.48)";
+      targetCtx.shadowBlur=8;
+      targetCtx.shadowOffsetY=3;
+      targetCtx.shadowOffsetX=0;
+    }else if(t.shadow==="hard"){
+      targetCtx.shadowColor="#000";
+      targetCtx.shadowBlur=0;
+      targetCtx.shadowOffsetX=3;
+      targetCtx.shadowOffsetY=3;
+    }else{
+      targetCtx.shadowColor="transparent";
+      targetCtx.shadowBlur=0;
+      targetCtx.shadowOffsetX=0;
+      targetCtx.shadowOffsetY=0;
+    }
+    targetCtx.lineJoin="round";
+    targetCtx.strokeStyle="#000";
+    targetCtx.lineWidth=t.outline||8;
+    targetCtx.fillStyle=t.color||"#fff";
+    lines.forEach((line,index)=>{
+      const y=centerY-totalHeight/2+lineHeight*(index+.5);
+      targetCtx.strokeText(line,centerX,y);
+      targetCtx.fillText(line,centerX,y);
+    });
+    targetCtx.restore();
+  });
 }
 
 function draw(){
@@ -730,8 +914,12 @@ $("#customStickerInput").onchange=e=>{
 };
 
 function getStickerBounds(s){
- const half=(s.size*.72)/canvas.width;
- return {left:s.x-half,right:s.x+half,top:s.y-half,bottom:s.y+half,half};
+ // Sticker size is stored in canvas pixels, while x/y are normalized.
+ // Use separate X/Y half extents so selection handles stay aligned on
+ // non-square canvases.
+ const halfX=(s.size*.72)/canvas.width;
+ const halfY=(s.size*.72)/canvas.height;
+ return {left:s.x-halfX,right:s.x+halfX,top:s.y-halfY,bottom:s.y+halfY,halfX,halfY};
 }
 function hitTestSticker(x,y){
  for(let i=stickers.length-1;i>=0;i--){
@@ -864,6 +1052,8 @@ function setTool(tool){
     $("#statusText").textContent="Draw mode — draw directly on the meme";
   } else if(tool==="text"){
     $("#statusText").textContent="Text tool selected";
+  } else if(tool==="select"){
+    $("#statusText").textContent="Cursor mode — select and move objects";
   } else if(tool==="sticker"){
     $("#statusText").textContent="Sticker tool selected";
   }
@@ -884,6 +1074,12 @@ $$(".tool-btn").forEach(b=>{
     e.stopPropagation();
 
     const tool=b.dataset.tool;
+
+    // Draw is a toggle: click it again to return to normal cursor/selection mode.
+    if(tool==="draw" && activeTool==="draw") {
+      setTool("select");
+      return;
+    }
 
     // Bottom Text button is the shortcut for the existing
     // “＋ Add another text” action in the Text editor.
@@ -1026,7 +1222,7 @@ canvas.addEventListener("pointerdown",e=>{
   if(sticker>=0){
     selectedSticker=sticker;selectedImage=-1;selectedText=-1;
     const st=stickers[sticker];
-    dragging={type:"sticker",index:sticker,offsetX:p.x-st.x,offsetY:p.y};
+    dragging={type:"sticker",index:sticker,offsetX:p.x-st.x,offsetY:p.y-st.y};
     draw();e.preventDefault();return;
   }
 
